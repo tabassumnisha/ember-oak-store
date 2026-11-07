@@ -22,9 +22,10 @@ A complete, ready-to-brand online store for a specialty coffee roaster, with a s
 
 **Quality**
 - 16 products in 4 categories and 22 sample orders, all original and invented for the demo
-- Original SVG illustrations for every product, so the demo needs no photo licences. Set `image` on a product to use a real photo instead
+- Brand logo and ten photographic backgrounds (hero, roast and gear banners, starter-kit scene, newsletter band, page headers), optimised to WebP, in `src/assets/images/`
+- Original SVG illustrations for every product, so the product grid needs no photo licences. Set `image` on a product to use a real photo instead
 - Responsive layout for phone, tablet and desktop, visible keyboard focus, labelled forms, reduced-motion support
-- About 280 kB of JavaScript (about 86 kB gzipped), no runtime dependencies beyond React
+- About 280 kB of JavaScript (about 86 kB gzipped), plus about 1.6 MB of optimised images that load lazily. No runtime dependencies beyond React
 
 ## 2. Tech stack
 
@@ -60,6 +61,7 @@ No environment variables or API keys are needed. More detail is in `HowToSetup.m
 |---|---|
 | Store name, contact details, currency, tax rate, shipping prices, free-shipping threshold | `src/config.js` |
 | Products, prices, stock, tasting notes, sizes | `src/data/products.js` (or use the admin) |
+| Logo and backgrounds | Replace the files in `src/assets/images/` (same file names) |
 | Product photos | Add `image: '/path.jpg'` to a product |
 | Colours and typography | Design tokens at the top of `src/styles.css` |
 | Page copy | The files in `src/pages/` |
@@ -98,6 +100,8 @@ src/
   router.jsx           hash router
   art.jsx              original SVG product illustrations
   styles.css           design tokens and all styles
+  assets/images/       logo and background images (WebP)
+  assets/fonts/        Inter, bundled locally
   data/                sample products and seeded orders
   components/          header, footer, bag drawer, product card, icons
   pages/               storefront pages

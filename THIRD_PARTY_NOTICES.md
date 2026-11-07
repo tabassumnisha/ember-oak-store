@@ -9,7 +9,9 @@ This project bundles the following open-source components. Each keeps its own li
 | [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react) | 5.0.0 | MIT | JSX transform (dev dependency, not shipped) |
 | [Inter](https://github.com/rsms/inter) (subset, WOFF) | 4.x | SIL Open Font License 1.1 | Typeface in `src/assets/fonts/` |
 
-All product illustrations, icons, copy and sample data in this project are original work written for the demo. No stock photos, logos or third-party artwork are included.
+All product illustrations, icons, copy and sample data in this project are original work written for the demo.
+
+The Ember & Oak logo and the ten background images in `src/assets/images/` were supplied by the author of this project, who holds the rights to use and license them. They contain no third-party stock photography. Replace them with your own artwork when you rebrand the store.
 
 ## Inter font licence
 

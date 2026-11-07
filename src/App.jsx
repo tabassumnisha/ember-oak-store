@@ -36,13 +36,14 @@ function Page({ path, query }) {
 
 export default function App() {
   const { path, query } = useRoute()
+  const first = path.split('/').filter(Boolean)[0]
   return (
     <>
       <Header />
       <main id="main">
         <Page path={path} query={query} />
       </main>
-      <Footer />
+      <Footer cta={!['checkout', 'admin', 'order'].includes(first)} />
       <CartDrawer />
       <Toast />
     </>

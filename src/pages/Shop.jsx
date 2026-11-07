@@ -4,6 +4,7 @@ import { useStore } from '../store'
 import { CATEGORIES } from '../data/products'
 import ProductCard from '../components/ProductCard'
 import { TASTES, lowestPrice, usePageTitle } from '../utils'
+import waveImg from '../assets/images/bg-wave.webp'
 
 const SORTS = [
   { id: 'featured', label: 'Featured' },
@@ -59,13 +60,16 @@ export default function Shop({ query }) {
   ].filter(Boolean)
 
   return (
-    <div className="wrap page">
-      <div className="page-head">
-        <h1>{q ? `Results for “${q}”` : catLabel || 'All products'}</h1>
-        <p className="muted">
-          {list.length} {list.length === 1 ? 'product' : 'products'}
-        </p>
-      </div>
+    <>
+      <header className="banner" style={{ backgroundImage: `url(${waveImg})` }}>
+        <div className="wrap banner-in">
+          <h1>{q ? `Results for “${q}”` : catLabel || 'All products'}</h1>
+          <p>
+            {list.length} {list.length === 1 ? 'product' : 'products'}
+          </p>
+        </div>
+      </header>
+      <div className="wrap page">
 
       <div className="shop">
         <aside className="filters" aria-label="Filters">
@@ -153,6 +157,7 @@ export default function Shop({ query }) {
           )}
         </div>
       </div>
-    </div>
+      </div>
+    </>
   )
 }

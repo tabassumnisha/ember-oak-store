@@ -3,6 +3,9 @@ import { useStore } from '../store'
 import { STORE, money } from '../config'
 import { usePageTitle } from '../utils'
 import NotFound from './NotFound'
+import beansBg from '../assets/images/bg-beans.webp'
+import sceneImg from '../assets/images/scene-brew.webp'
+import tastingImg from '../assets/images/tasting.webp'
 
 export default function Info({ slug }) {
   const { notify } = useStore()
@@ -12,8 +15,13 @@ export default function Info({ slug }) {
   if (!titles[slug]) return <NotFound />
 
   return (
+    <>
+    <header className="banner" style={{ backgroundImage: `url(${beansBg})` }}>
+      <div className="wrap banner-in">
+        <h1>{titles[slug]}</h1>
+      </div>
+    </header>
     <div className="wrap page prose">
-      <h1>{titles[slug]}</h1>
 
       {slug === 'about' && (
         <>
@@ -24,6 +32,8 @@ export default function Info({ slug }) {
           <p>
             Edit the copy, products and prices in <code>src/config.js</code> and <code>src/data/products.js</code>, or connect the store to your own catalogue API.
           </p>
+          <img className="wide-img" src={sceneImg} alt="A pour-over setup, a bag of Ember & Oak coffee, a copper kettle and a green mug on a wooden table" loading="lazy" />
+          <img className="wide-img" src={tastingImg} alt="Espresso, a latte and an iced coffee beside a chalkboard of tasting notes" loading="lazy" />
         </>
       )}
 
@@ -76,5 +86,6 @@ export default function Info({ slug }) {
         </>
       )}
     </div>
+    </>
   )
 }

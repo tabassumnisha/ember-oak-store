@@ -4,6 +4,7 @@ import { money } from '../config'
 import { Icon } from '../components/Icons'
 import { fmtDate, usePageTitle } from '../utils'
 import NotFound from './NotFound'
+import lightBg from '../assets/images/bg-light.webp'
 
 export default function Order({ id }) {
   usePageTitle('Order confirmed')
@@ -11,6 +12,7 @@ export default function Order({ id }) {
   const o = orders.find((x) => x.id === id)
   if (!o) return <NotFound />
   return (
+    <div className="photo-light" style={{ backgroundImage: `url(${lightBg})` }}>
     <div className="wrap page confirm">
       <div className="confirm-badge">
         <Icon name="check" size={28} stroke={2} />
@@ -46,6 +48,7 @@ export default function Order({ id }) {
       <Link to="/shop" className="btn btn-dark">
         Continue shopping
       </Link>
+    </div>
     </div>
   )
 }

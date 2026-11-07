@@ -19,6 +19,8 @@ A front-end e-commerce store for a fictional coffee roaster, "Ember & Oak", with
 - `src/data/products.js` holds the sample catalogue. `src/data/seedOrders.js` builds deterministic sample orders.
 - `src/art.jsx` draws every product illustration as SVG. A product's `art` object selects the drawing and colours. A product with an `image` field shows that photo instead (see `components/Media.jsx`).
 - `src/pages/` holds one component per route. `src/pages/admin/` holds the admin screens.
+- `src/assets/images/` holds the logo (`logo.webp`, transparent) and backgrounds. Home, shop, info and order pages import them. Keep new images under about 250 kB.
+- `public/favicon.png` is copied to the site root by Vite.
 - `src/styles.css` is the only stylesheet. Colours, fonts and radii are CSS custom properties in `:root`.
 
 ## Data shape (product)

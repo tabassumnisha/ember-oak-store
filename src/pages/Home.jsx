@@ -7,18 +7,17 @@ import Media from '../components/Media'
 import ProductCard from '../components/ProductCard'
 import { REVIEW_POOL } from '../data/products'
 import { TASTES, usePageTitle } from '../utils'
-
-function roastedOn() {
-  const d = new Date(Date.now() - 2 * 86400000)
-  return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })
-}
+import heroImg from '../assets/images/hero.webp'
+import roastsImg from '../assets/images/roasts.webp'
+import gearImg from '../assets/images/gear.webp'
+import kitImg from '../assets/images/kit.webp'
+import lightImg from '../assets/images/bg-light.webp'
 
 export default function Home() {
   usePageTitle('')
   const { products } = useStore()
   const [taste, setTaste] = useState('bright')
 
-  const hero = products.find((p) => p.id === 'yirgacheffe-sunrise') || products[0]
   const roasts = products.filter((p) => p.category === 'beans' && p.featured).slice(0, 4)
   const gear = products.filter((p) => p.category === 'gear' && p.stock > 0).slice(0, 3)
   const gift = products.find((p) => p.id === 'tasting-flight-box')
@@ -28,7 +27,7 @@ export default function Home() {
 
   return (
     <>
-      <section className="hero">
+      <section className="hero" style={{ backgroundImage: `url(${heroImg})` }}>
         <div className="wrap hero-in">
           <div className="hero-copy">
             <h1>
@@ -48,13 +47,6 @@ export default function Home() {
               )}
             </div>
           </div>
-          <Link to={`/product/${hero.id}`} className="hero-arch rise r3" aria-label={`${hero.name}, this week's featured roast`}>
-            <Media product={hero} className="hero-art" />
-            <span className="hero-tag">
-              <strong>{hero.name}</strong>
-              Roasted {roastedOn()}
-            </span>
-          </Link>
         </div>
       </section>
 
@@ -83,7 +75,19 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section section-tint">
+      <section className="wrap band">
+        <figure>
+          <img src={roastsImg} alt="Ember & Oak coffee bags in four roast profiles, with a scoop of fresh beans" loading="lazy" />
+          <figcaption>
+            <p>Small-batch roasts in every profile, from bright Ethiopian lots to dark espresso blends.</p>
+            <Link to="/shop?cat=beans" className="text-link">
+              Explore the roasts <Icon name="arrow" size={16} />
+            </Link>
+          </figcaption>
+        </figure>
+      </section>
+
+      <section className="section section-photo" style={{ backgroundImage: `url(${lightImg})` }}>
         <div className="wrap finder">
           <div className="finder-copy">
             <h2>Not sure where to start?</h2>
@@ -123,6 +127,7 @@ export default function Home() {
               All brewing gear <Icon name="arrow" size={16} />
             </Link>
           </div>
+          <img className="wide-img" src={gearImg} alt="Pour-over, French press and moka pot brewers with a bag of Ember & Oak coffee" loading="lazy" />
           <div className="grid grid-3">
             {gear.map((p) => (
               <ProductCard key={p.id} product={p} />
@@ -134,9 +139,7 @@ export default function Home() {
       {kit && (
         <section className="feature">
           <div className="wrap feature-in">
-            <div className="feature-art">
-              <Media product={kit} className="feature-img" view="light" />
-            </div>
+            <img className="feature-img" src={kitImg} alt="The Pour-Over Starter Kit box with dripper, kettle, scale and a bag of House Blend" loading="lazy" />
             <div className="feature-copy">
               <h2>Everything for a first great cup</h2>
               <p className="lede">{kit.description}</p>
