@@ -1,12 +1,8 @@
 -- Ember & Oak demo data. Load after schema.sql (the server does this when DEMO_MODE=true and the database is empty).
--- Contains a sample catalogue, two demo accounts and 22 sample orders with dates relative to the day it is loaded.
--- Demo logins are listed in README.md. Delete the demo users before going live.
+-- Contains a sample catalogue, 22 sample orders with dates relative to the day it is loaded.
+-- The two demo users (ids 1 and 2) are created by server/db.js from the DEMO_* settings, not from this file.
 
 -- No BEGIN/COMMIT here: server/db.js runs this file inside its own transaction.
-
-INSERT OR IGNORE INTO users (id, email, name, password_hash, role) VALUES
-  (1, 'admin@emberoak.demo', 'Store Admin', 'scrypt$16384$8$1$dn35jPGZiCvHxZt7p3vuqw==$L+UIFi/PVcFkQRNA8DmDNNRBOsFzJo81CE71ztPCilC9SJlf53X5qheCX5QxGN3Jh5gB9Lvpxpo59NgBpdTRwA==', 'admin'),
-  (2, 'customer@emberoak.demo', 'Alex Morgan', 'scrypt$16384$8$1$GmC325GELygjwFPaJ76L7Q==$5lynfCVt2LzLynYgyRpT9V+xs9nO7mWcSsvuC+tFINZ7/iZRbE0HkAgogxq6U2eCqh9uFOThiPLT3IfBkql3Tg==', 'customer');
 
 INSERT INTO products (id, category_id, name, summary, description, price_cents, compare_at_cents, stock, rating, reviews_count, featured, image, origin, roast, process, altitude, notes, profile, sizes, colors, details, art, created_at) VALUES
   ('yirgacheffe-sunrise', 'beans', 'Yirgacheffe Sunrise', 'Floral and bright, with lemon curd sweetness.', 'A washed lot from smallholder farms near Yirgacheffe. Roasted light to keep the florals intact, it brews clean and tea-like. Best as a pour-over or in an AeroPress.', 1800, NULL, 64, 4.9, 212, 1, '/products/yirgacheffe-sunrise.webp', 'Ethiopia', 'Light', 'Washed', '1,900 m', '["Jasmine","Lemon curd","Peach"]', '{"acidity":5,"body":2,"sweetness":4}', '[{"label":"250 g","price_cents":1800},{"label":"1 kg","price_cents":6200}]', NULL, NULL, '{"type":"bag","color":"#8C2F39","label":"Yirgacheffe","sub":"Ethiopia"}', '2026-09-02'),

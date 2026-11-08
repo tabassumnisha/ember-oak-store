@@ -17,12 +17,21 @@ export const config = {
   databaseDir: process.env.DATABASE_SCRIPTS_DIR ? path.resolve(root, process.env.DATABASE_SCRIPTS_DIR) : firstExisting(path.join(root, 'database'), path.resolve(root, '..', 'database')),
   staticDir: process.env.STATIC_DIR ? path.resolve(root, process.env.STATIC_DIR) : firstExisting(path.join(root, 'dist'), path.resolve(root, '..', 'React Web', 'dist')),
   demoMode: bool(process.env.DEMO_MODE, true),
+  // Demo-only logins (used when DEMO_MODE=true). Not secrets: they are shown on the demo sign-in page.
+  // Override with DEMO_ADMIN_EMAIL / DEMO_ADMIN_PASSWORD / DEMO_CUSTOMER_EMAIL / DEMO_CUSTOMER_PASSWORD.
+  demo: {
+    admin: { email: process.env.DEMO_ADMIN_EMAIL || 'admin@emberoak.demo', password: process.env.DEMO_ADMIN_PASSWORD || 'Admin#Demo2026' },
+    customer: { email: process.env.DEMO_CUSTOMER_EMAIL || 'customer@emberoak.demo', password: process.env.DEMO_CUSTOMER_PASSWORD || 'Customer#Demo2026' },
+  },
+  sessionSecret: process.env.SESSION_SECRET || '',
+  allowGuestCheckout: bool(process.env.ALLOW_GUEST_CHECKOUT, true),
   adminEmail: (process.env.ADMIN_EMAIL || '').trim().toLowerCase(),
   adminPassword: process.env.ADMIN_PASSWORD || '',
   trustProxy: bool(process.env.TRUST_PROXY, false),
   cookieSecure: bool(process.env.COOKIE_SECURE, false), // also turned on per request when the proxy says https
   allowedOrigins: (process.env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean),
   sessionDays: 7,
+  statelessSessionHours: 12, // serverless demo cookies live shorter because they cannot be revoked
   // Store rules the server applies when it prices an order. The browser never decides prices.
   store: {
     taxRate: 0.07,

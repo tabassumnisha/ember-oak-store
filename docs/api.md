@@ -17,7 +17,7 @@ State-changing requests (`POST`, `PUT`, `PATCH`, `DELETE`) must be JSON and, whe
 | `POST /api/products` | **admin** | Create a product |
 | `PUT /api/products/:id` | **admin** | Replace a product's editable fields |
 | `DELETE /api/products/:id` | **admin** | Delete a product (past order lines keep their copied name and price) |
-| `POST /api/orders` | public | Place an order `{ items: [{ productId, qty, size?, grind?, color? }], customer, payment, shippingId }`. Prices come from the database. Returns the order with a private `accessToken` |
+| `POST /api/orders` | public (guest checkout is intentional; 20 orders per hour per address; set `ALLOW_GUEST_CHECKOUT=false` to require sign-in) | Place an order `{ items: [{ productId, qty, size?, grind?, color? }], customer, payment, shippingId }`. Prices come from the database. Returns the order with a private `accessToken` |
 | `GET /api/orders` | signed in | Customer: own orders. Admin: all orders |
 | `GET /api/orders/:id` | owner, admin, or `?token=` | One order. Anyone else gets 404 |
 | `PATCH /api/orders/:id` | **admin** | `{ status }`: Processing, Roasting, Shipped, Delivered, Cancelled. Cancelling returns stock |

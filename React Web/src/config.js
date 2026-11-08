@@ -7,14 +7,14 @@ export const STORE = {
   address: '14 Foundry Lane, Portland, OR',
   currency: 'USD',
   locale: 'en-US',
-  taxRate: 0.07, // 7% tax on the order subtotal
-  freeShippingOver: 45, // free standard shipping above this subtotal
+  // Tax and shipping are decided by the server and filled in from /api/config at start-up (see store.jsx).
+  // These zero values only show for a moment before that response arrives.
+  taxRate: 0,
+  freeShippingOver: 0,
   shipping: [
-    { id: 'standard', label: 'Standard (3–5 days)', price: 5.9 },
-    { id: 'express', label: 'Express (1–2 days)', price: 14 },
+    { id: 'standard', label: 'Standard', price: 0 },
+    { id: 'express', label: 'Express', price: 0 },
   ],
-  // Demo admin login. Replace with real authentication before going live.
-  admin: { email: 'admin@emberoak.demo', password: 'admin123' },
 }
 
 const fmt = new Intl.NumberFormat(STORE.locale, {

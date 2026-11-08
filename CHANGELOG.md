@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.0.1 (2026-11-08)
+Audit follow-up.
+- Security audit (2026-11-08): `npm audit` reports 0 vulnerabilities in `React Web` (Vite 7.3.7, React 19.2.8) and `Node API` (no dependencies). The release workflow re-runs it on every build.
+- Demo logins now live in one place (`server/config.js`, overridable with `DEMO_*` variables) and are hashed at start-up. They are no longer stored in `seed.sql`, the front end or the tests.
+- Removed the guessable fallback signing key. Signed (serverless) sessions use `SESSION_SECRET`, or a random per-process key with a warning. They now last 12 hours.
+- Orders have their own rate limit (20 per hour per address), separate from sign-ups. Guest checkout is intentional and can be switched off with `ALLOW_GUEST_CHECKOUT=false`.
+- Fixed a stock bug: an order now fails with 409 if a unit sold out in the meantime, and reopening a cancelled order is refused when stock is short (it no longer clamps to zero).
+- `npm ci` everywhere (Vercel, Render, Docker), `.nvmrc` added. The front end no longer carries its own tax and shipping numbers.
+- Split the product editor into its own file. 18 API tests.
+
 ## 2.0.0 (2026-11-08)
 Full-stack release. The store now has a real back end.
 - Added a dependency-free Node API (`server/`) with a SQLite database (`database/schema.sql`, `database/seed.sql`).

@@ -69,6 +69,9 @@ Copy `.env.example` and set the values you need. The most important:
 | `DEMO_MODE` | `true` loads sample data and the demo accounts. `false` starts empty and creates one admin from `ADMIN_EMAIL` / `ADMIN_PASSWORD` |
 | `DATABASE_PATH` | Where the SQLite file lives. Put it on a persistent disk or volume |
 | `PORT` | HTTP port, default 3000 |
+| `SESSION_SECRET` | Long random string. Required for signed sessions on serverless hosting (Vercel) |
+| `DEMO_ADMIN_*`, `DEMO_CUSTOMER_*` | Optional overrides of the demo logins (`EMAIL`, `PASSWORD`) |
+| `ALLOW_GUEST_CHECKOUT` | `true` (default) lets visitors order without an account; `false` requires sign-in |
 | `COOKIE_SECURE`, `TRUST_PROXY` | Turn on when running behind HTTPS or a reverse proxy |
 
 Tax rate, shipping prices and the free-shipping threshold are in `Node API/server/config.js`.

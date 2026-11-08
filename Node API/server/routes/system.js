@@ -10,7 +10,7 @@ export function systemRoutes({ route }) {
       freeShippingOver: config.store.freeShippingOverCents / 100,
       shipping: config.store.shipping.map((s) => ({ id: s.id, label: s.label, price: s.priceCents / 100 })),
       demoAccounts: config.demoMode
-        ? [{ role: 'admin', email: 'admin@emberoak.demo', password: 'Admin#Demo2026' }, { role: 'customer', email: 'customer@emberoak.demo', password: 'Customer#Demo2026' }]
+        ? [{ role: 'admin', ...config.demo.admin }, { role: 'customer', ...config.demo.customer }]
         : [],
     }))
 

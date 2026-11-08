@@ -3,10 +3,11 @@ import test, { before, after } from 'node:test'
 import assert from 'node:assert/strict'
 import { openDb, bootstrap } from '../server/db.js'
 import { createApp } from '../server/index.js'
+import { config } from '../server/config.js'
 
 let server, base, db
-const ADMIN = { email: 'admin@emberoak.demo', password: 'Admin#Demo2026' }
-const CUSTOMER = { email: 'customer@emberoak.demo', password: 'Customer#Demo2026' }
+const ADMIN = config.demo.admin // demo logins come from server/config.js, not from the tests
+const CUSTOMER = config.demo.customer
 
 before(async () => {
   db = openDb(':memory:')
@@ -190,4 +191,25 @@ test('stateless sessions (serverless demo mode) work across a fresh database ins
   } finally {
     delete process.env.STATELESS_SESSIONS
   }
+})
+
+test('selling the last unit twice is refused, and reopening a cancelled order cannot oversell', async () => {
+  const admin = await login(ADMIN)
+  const id = 'emerald-moka-pot'
+  const stock = () => db.prepare('SELECT stock FROM products WHERE id = ?').get(id).stock
+  db.prepare('UPDATE products SET stock = 2 WHERE id = ?').run(id)
+  const line = (qty) => [{ productId: id, qty }]
+  const a = await call('POST', '/api/orders', { body: order(line(2)) })
+  assert.equal(a.status, 201)
+  assert.equal(stock(), 0)
+  const b = await call('POST', '/api/orders', { body: order(line(1)) })
+  assert.ok([409, 422].includes(b.status))
+  assert.equal(stock(), 0)
+  // cancel returns stock; someone else buys it; reopening must now fail instead of going negative
+  assert.equal((await call('PATCH', `/api/orders/${a.json.order.id}`, { body: { status: 'Cancelled' }, cookie: admin })).status, 200)
+  assert.equal(stock(), 2)
+  assert.equal((await call('POST', '/api/orders', { body: order(line(2)) })).status, 201)
+  const re = await call('PATCH', `/api/orders/${a.json.order.id}`, { body: { status: 'Processing' }, cookie: admin })
+  assert.equal(re.status, 409)
+  assert.equal(stock(), 0)
 })

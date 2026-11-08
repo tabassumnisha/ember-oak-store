@@ -29,12 +29,23 @@ export const COOKIE = 'eo_session'
 // function instance has its own temporary database. The cookie is then a signed "userId.expiry.signature"
 // value that any instance can verify. Use the normal database sessions on a real Node host.
 const stateless = () => process.env.STATELESS_SESSIONS === 'true'
-const secret = () => process.env.SESSION_SECRET || crypto.createHash('sha256').update('ember-oak-demo|' + (process.env.VERCEL_PROJECT_ID || 'local')).digest('hex')
+// Signing key: SESSION_SECRET if set (needed so every serverless instance agrees). Otherwise a random key that
+// lives only in this process, so there is never a guessable default.
+let fallbackSecret
+const secret = () => {
+  const s = process.env.SESSION_SECRET || config.sessionSecret
+  if (s) return s
+  if (!fallbackSecret) {
+    fallbackSecret = crypto.randomBytes(32).toString('hex')
+    console.warn('[ember-oak] SESSION_SECRET is not set: using a random key for this process. Set SESSION_SECRET so signed sessions survive restarts and work across instances.')
+  }
+  return fallbackSecret
+}
 const sign = (payload) => crypto.createHmac('sha256', secret()).update(payload).digest('base64url')
 
 export function createSession(db, userId) {
   if (stateless()) {
-    const payload = `${userId}.${Date.now() + config.sessionDays * 864e5}`
+    const payload = `${userId}.${Date.now() + config.statelessSessionHours * 36e5}`
     return `${payload}.${sign(payload)}`
   }
   const token = crypto.randomBytes(32).toString('base64url')

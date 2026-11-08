@@ -2,9 +2,8 @@
 # Stage 1: build the React front end
 FROM node:22.14.0-alpine3.21 AS web
 WORKDIR /web
-COPY ["React Web/package.json", "React Web/package-lock.json*", "./"]
-# Uses the lockfile when present (it is included in the release ZIP).
-RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
+COPY ["React Web/package.json", "React Web/package-lock.json", "./"]
+RUN npm ci
 COPY ["React Web/", "./"]
 RUN npm run build
 

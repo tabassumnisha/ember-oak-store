@@ -50,7 +50,7 @@ Admin only: `POST|PUT|DELETE /api/products`, `PATCH /api/orders/:id`, `POST /api
 - Copy is plain, sentence case, active voice.
 
 ## Security notes
-- Do not put secrets in the repo. The only credentials are the demo accounts in `database/seed.sql`, active only in demo mode. Delete them before going live.
+- Do not put secrets in the repo. The only credentials are the demo accounts defined in `Node API/server/config.js` (overridable with `DEMO_*` variables), created only in demo mode. Delete them before going live.
 - Card details are validated in `Checkout.jsx` and discarded; they are never sent to the server. Use a payment provider's hosted fields.
 - Session cookie is HttpOnly and SameSite=Lax. State-changing requests must be JSON and pass an Origin check.
 - Add a role check to every new write endpoint and a test for the 401 and 403 cases in `Node API/tests/api.test.js`.

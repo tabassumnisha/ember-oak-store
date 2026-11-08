@@ -4,7 +4,7 @@ services:
     name: ember-oak
     runtime: node
     plan: starter
-    buildCommand: cd "React Web" && npm install && npm run build
+    buildCommand: cd "React Web" && npm ci && npm run build
     startCommand: cd "Node API" && npm start
     healthCheckPath: /api/health
     envVars:

@@ -1,15 +1,20 @@
 import crypto from 'node:crypto'
+import { config } from '../config.js'
 import { tx } from '../db.js'
+import { makeLimiter } from '../auth.js'
 import { HttpError, send } from '../http.js'
 import { orderOut, priceOrder } from '../pricing.js'
 import { validateCustomer } from '../validate.js'
 
+// Orders have their own, tighter limit than sign-ups so one cannot starve the other.
+const orderLimit = makeLimiter(20, 36e5)
 const STATUSES = ['Processing', 'Roasting', 'Shipped', 'Delivered', 'Cancelled']
 
 export function orderRoutes({ db, q, route, requireUser, requireAdmin, writeLimit, itemsOf }) {
   // ---- orders
   route('POST', '/api/orders', (c) => {
-    if (!writeLimit.take('ord:' + c.ip)) throw new HttpError(429, 'Too many orders from this address. Try again later.')
+    if (!config.allowGuestCheckout && !c.user) throw new HttpError(401, 'Please sign in to check out')
+    if (!orderLimit.take('ord:' + c.ip)) throw new HttpError(429, 'Too many orders from this address. Try again later.')
     const customer = validateCustomer(c.body.customer)
     const payment = c.body.payment === 'Cash on delivery' ? 'Cash on delivery' : 'Card'
     const order = tx(db, () => {
@@ -24,7 +29,10 @@ export function orderRoutes({ db, q, route, requireUser, requireAdmin, writeLimi
       for (const l of priced.lines) {
         q('INSERT INTO order_items (order_id, product_id, name, size, grind, color, qty, unit_price_cents) VALUES (?, ?, ?, ?, ?, ?, ?, ?)').run(id, l.product.id, l.product.name, l.size, l.grind, l.color, l.qty, l.unit)
       }
-      for (const [pid, qty] of priced.need) q('UPDATE products SET stock = stock - ? WHERE id = ? AND stock >= ?').run(qty, pid, qty)
+      for (const [pid, qty] of priced.need) {
+        const r = q('UPDATE products SET stock = stock - ? WHERE id = ? AND stock >= ?').run(qty, pid, qty)
+        if (r.changes !== 1) throw new HttpError(409, 'An item just sold out. Please review your bag.') // rolls the whole order back
+      }
       return id
     })
     const o = q('SELECT * FROM orders WHERE id = ?').get(order)
@@ -57,7 +65,11 @@ export function orderRoutes({ db, q, route, requireUser, requireAdmin, writeLimi
       if (status === 'Cancelled' && o.status !== 'Cancelled')
         for (const i of itemsOf(o.id)) if (i.product_id) q('UPDATE products SET stock = stock + ? WHERE id = ?').run(i.qty, i.product_id)
       if (o.status === 'Cancelled' && status !== 'Cancelled')
-        for (const i of itemsOf(o.id)) if (i.product_id) q('UPDATE products SET stock = MAX(0, stock - ?) WHERE id = ?').run(i.qty, i.product_id)
+        for (const i of itemsOf(o.id)) {
+          if (!i.product_id) continue
+          const r = q('UPDATE products SET stock = stock - ? WHERE id = ? AND stock >= ?').run(i.qty, i.product_id, i.qty)
+          if (r.changes !== 1) throw new HttpError(409, `Not enough stock to reopen this order (${i.name}).`)
+        }
       q('UPDATE orders SET status = ? WHERE id = ?').run(status, o.id)
     })
     send(c.res, 200, { order: orderOut(q('SELECT * FROM orders WHERE id = ?').get(o.id), itemsOf(o.id)) })
