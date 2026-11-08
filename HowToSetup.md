@@ -45,6 +45,9 @@ Copy `.env.example` to `.env`, edit it, then start with `node --env-file=.env se
 - Node host (Render, Railway, Fly.io, VPS): build `npm install && npm run build`, start `npm start`, mount a persistent disk at the `DATABASE_PATH` folder
 Add HTTPS in front and set `COOKIE_SECURE=true`.
 
+## Vercel demo hosting
+Import the repo in Vercel and deploy with the default settings (Node 22 or newer; `vercel.json` is included). Demo data is rebuilt in memory whenever a function instance starts, so edits are temporary. Do not use Vercel for a real store.
+
 ## 7. Go live (turn demo mode off)
 1. Stop the server and delete `data/ember-oak.db` (or use a new path).
 2. Set `DEMO_MODE=false`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` (10+ characters).

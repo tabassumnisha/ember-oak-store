@@ -20,6 +20,8 @@ Guidance for AI coding tools (Claude Code, Codex, Cursor) working in this reposi
 - `validate.js` input validation. `pricing.js` row-to-JSON mapping and `priceOrder()`, which prices an order from database values only.
 - `http.js` JSON helpers, security headers, CSRF origin check, static file serving.
 
+- `api/[...path].js` is the Vercel entry (demo hosting only). It sets `STATELESS_SESSIONS=true` so sessions are signed cookies instead of database rows, and uses an in-memory database.
+
 ## Database (`database/`)
 `schema.sql` is idempotent (`IF NOT EXISTS`) and runs on every start. `seed.sql` is demo content, loaded only into an empty database. Money is integer cents in the database and dollars in the JSON the API returns.
 

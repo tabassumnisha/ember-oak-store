@@ -92,9 +92,9 @@ Tax rate, shipping prices and the free-shipping threshold are in `server/config.
 | Product photos | `public/products/`, then set the product's image path in the admin |
 | Colours and typography | design tokens at the top of `src/styles.css` |
 
-## 6. Deployment (three routes)
+## 6. Deployment (four routes)
 
-The store needs a host that can run Node.js and keep a file on disk. Static-only hosts (Netlify, Vercel static, GitHub Pages) cannot run the server.
+A real store needs a host that can run Node.js and keep a file on disk (routes A to C). Static-only hosts (Netlify, GitHub Pages) cannot run the server. Route D shows the store on Vercel for demonstrations only.
 
 **Route A: Docker on a VPS**
 ```bash
@@ -107,6 +107,9 @@ Build command `npm install && npm run build`, start command `npm start`, Node 22
 
 **Route C: plain VPS without Docker**
 `npm install && npm run build`, then run `npm start` under systemd or pm2 behind a reverse proxy.
+
+**Route D: Vercel (live demo only)**
+Import the repository into Vercel. `vercel.json` and `api/[...path].js` are included: the build runs `npm run build` and the API runs as a serverless function with an in-memory copy of the demo data. Sign-in works across instances through signed cookies. Data you change (new orders, edited products) is temporary and resets when the function restarts, so use this route to show the store, not to run it. Optionally set `SESSION_SECRET` in the Vercel project settings.
 
 Hosting estimate: 1 vCPU and 512 MB RAM is enough.
 

@@ -13,6 +13,8 @@ Full-stack release. The store now has a real back end.
 - Added seven product photographs and three new products (Sumatra Mandheling, Copper French Press, Emerald Moka Pot).
 - Improved readability of text over background images on phones.
 - New deployment files: Node-based `Dockerfile`, `docker-compose.yml`, `render.yaml`, `.env.example`.
+- Added Vercel demo hosting (`vercel.json`, `api/[...path].js`) with stateless signed sessions; data is temporary in this mode.
+- Centred the loading and error pages.
 - Removed the static-only deployment files (`nginx.conf`, `netlify.toml`).
 
 ## 1.0.0 (2026-11-06)

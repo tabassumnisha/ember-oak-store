@@ -25,7 +25,18 @@ const sha = (s) => crypto.createHash('sha256').update(s).digest('hex')
 const sqlTime = (d) => d.toISOString().slice(0, 19).replace('T', ' ')
 export const COOKIE = 'eo_session'
 
+// Stateless mode (STATELESS_SESSIONS=true) is for serverless demo hosting such as Vercel, where each
+// function instance has its own temporary database. The cookie is then a signed "userId.expiry.signature"
+// value that any instance can verify. Use the normal database sessions on a real Node host.
+const stateless = () => process.env.STATELESS_SESSIONS === 'true'
+const secret = () => process.env.SESSION_SECRET || crypto.createHash('sha256').update('ember-oak-demo|' + (process.env.VERCEL_PROJECT_ID || 'local')).digest('hex')
+const sign = (payload) => crypto.createHmac('sha256', secret()).update(payload).digest('base64url')
+
 export function createSession(db, userId) {
+  if (stateless()) {
+    const payload = `${userId}.${Date.now() + config.sessionDays * 864e5}`
+    return `${payload}.${sign(payload)}`
+  }
   const token = crypto.randomBytes(32).toString('base64url')
   const expires = new Date(Date.now() + config.sessionDays * 864e5)
   db.prepare('INSERT INTO sessions (token_hash, user_id, expires_at) VALUES (?, ?, ?)').run(sha(token), userId, sqlTime(expires))
@@ -34,11 +45,18 @@ export function createSession(db, userId) {
 }
 
 export function destroySession(db, token) {
-  if (token) db.prepare('DELETE FROM sessions WHERE token_hash = ?').run(sha(token))
+  if (!stateless() && token) db.prepare('DELETE FROM sessions WHERE token_hash = ?').run(sha(token))
 }
 
 export function userFromToken(db, token) {
   if (!token) return null
+  if (stateless()) {
+    const [id, exp, sig] = String(token).split('.')
+    if (!sig || Number(exp) < Date.now()) return null
+    const good = Buffer.from(sign(`${id}.${exp}`)), got = Buffer.from(sig)
+    if (good.length !== got.length || !crypto.timingSafeEqual(good, got)) return null
+    return db.prepare('SELECT id, email, name, role FROM users WHERE id = ?').get(Number(id)) || null
+  }
   return (
     db
       .prepare(

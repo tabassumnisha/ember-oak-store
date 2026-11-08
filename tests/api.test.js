@@ -177,3 +177,17 @@ test('unknown API routes return JSON 404', async () => {
   const r = await call('GET', '/api/nope')
   assert.equal(r.status, 404)
 })
+
+test('stateless sessions (serverless demo mode) work across a fresh database instance', async () => {
+  process.env.STATELESS_SESSIONS = 'true'
+  try {
+    const r = await call('POST', '/api/auth/login', { body: ADMIN })
+    assert.equal(r.status, 200)
+    assert.equal((await call('GET', '/api/auth/me', { cookie: r.cookie })).json.user.role, 'admin')
+    const tampered = r.cookie.replace(/.$/, (c) => (c === 'a' ? 'b' : 'a'))
+    assert.equal((await call('GET', '/api/auth/me', { cookie: tampered })).json.user, null)
+    assert.equal((await call('POST', '/api/products', { body: {}, cookie: tampered })).status, 401)
+  } finally {
+    delete process.env.STATELESS_SESSIONS
+  }
+})
