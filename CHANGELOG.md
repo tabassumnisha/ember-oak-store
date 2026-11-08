@@ -18,6 +18,7 @@ Full-stack release. The store now has a real back end.
 - Restructured into `Node API/` and `React Web/` (each with its own package.json and lockfile), `database/` and `docs/` (API reference, database diagram, customisation guide).
 - Split the long route file and stylesheet into smaller modules; split the layout components into separate files.
 - Fixed the server start check for folder names that contain a space.
+- Pinned Vite 7.3.7 (patched for the published dev-server advisories).
 - Removed the static-only deployment files (`nginx.conf`, `netlify.toml`).
 
 ## 1.0.0 (2026-11-06)

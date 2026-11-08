@@ -79,7 +79,7 @@ Inter (subset, WOFF files in `React Web/src/assets/fonts/`) by The Inter Project
 All icons are small inline SVG paths in `React Web/src/components/Icons.jsx`. There is no icon font and no external request.
 
 ### B4. Code and dependencies
-- Runtime packages: `react` and `react-dom` 19.2.8 (MIT). Build packages: `vite` 7.0.0 and `@vitejs/plugin-react` 5.0.0 (MIT). Exact versions are pinned in `package.json`.
+- Runtime packages: `react` and `react-dom` 19.2.8 (MIT). Build packages: `vite` 7.3.7 and `@vitejs/plugin-react` 5.0.0 (MIT). Exact versions are pinned in `package.json`.
 - The server (`Node API/server/`) imports only Node.js built-in modules (`node:http`, `node:sqlite`, `node:crypto`, `node:fs`, `node:path`). No CDN scripts, analytics or tracking.
 - The Dockerfile uses the pinned official image `node:22.14.0-alpine3.21`. Move to a current patch release or a digest when you deploy.
 - All other HTML, CSS, JavaScript and SQL were written for this Software and are covered by Part A.
