@@ -26,7 +26,11 @@ export function tx(db, fn) {
   }
 }
 
-const count = (db, t) => db.prepare(`SELECT COUNT(*) AS c FROM ${t}`).get().c
+const TABLES = new Set(['users', 'products', 'orders']) // fixed list: the table name is never user input
+const count = (db, t) => {
+  if (!TABLES.has(t)) throw new Error('unknown table')
+  return db.prepare(`SELECT COUNT(*) AS c FROM ${t}`).get().c
+}
 
 // Demo accounts come from config.demo (ids 1 and 2 are what the sample orders point at). Hashed here, never stored in SQL.
 function seedDemoUsers(db) {

@@ -6,8 +6,8 @@ A complete online store for a specialty coffee roaster. Customers browse, regist
 
 | Role | Email | Password |
 |---|---|---|
-| Admin | `admin@emberoak.demo` | `Admin#Demo2026` |
-| Customer | `customer@emberoak.demo` | `Customer#Demo2026` |
+| Admin | `admin@emberoak.demo` | the value of `DEMO_ADMIN_PASSWORD` |
+| Customer | `customer@emberoak.demo` | the value of `DEMO_CUSTOMER_PASSWORD` |
 
 Admin panel: `/#/admin`. Customer sign-in: `/#/account/login`. The login pages show these details too while `DEMO_MODE=true`.
 

@@ -1,6 +1,7 @@
 // All settings come from environment variables. See .env.example.
 import fs from 'node:fs'
 import path from 'node:path'
+import crypto from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 
 // `root` is the Node API folder. In the ZIP the SQL scripts and the built front end sit next to it:
@@ -8,6 +9,16 @@ import { fileURLToPath } from 'node:url'
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const firstExisting = (...c) => c.find((p) => fs.existsSync(p)) || c[c.length - 1]
 const bool = (v, d) => (v === undefined || v === '' ? d : ['1', 'true', 'yes', 'on'].includes(String(v).toLowerCase()))
+
+function demoPassword(envName, role) {
+  if (process.env[envName]) return process.env[envName]
+  const secret = process.env.SESSION_SECRET
+  const pw = secret
+    ? 'Demo-' + crypto.createHmac('sha256', secret).update('demo-' + role).digest('base64url').slice(0, 12)
+    : 'Demo-' + crypto.randomBytes(9).toString('base64url')
+  if (bool(process.env.DEMO_MODE, true) && !secret) console.warn(`[ember-oak] ${envName} not set: using a random demo ${role} password for this run: ${pw}`)
+  return pw
+}
 
 export const config = {
   root,
@@ -19,9 +30,11 @@ export const config = {
   demoMode: bool(process.env.DEMO_MODE, true),
   // Demo-only logins (used when DEMO_MODE=true). Not secrets: they are shown on the demo sign-in page.
   // Override with DEMO_ADMIN_EMAIL / DEMO_ADMIN_PASSWORD / DEMO_CUSTOMER_EMAIL / DEMO_CUSTOMER_PASSWORD.
+  // No password is written in the code. Set DEMO_*_PASSWORD, or SESSION_SECRET (passwords are then derived from it
+  // and stay the same on every serverless instance), or neither (random per start, printed to the server log).
   demo: {
-    admin: { email: process.env.DEMO_ADMIN_EMAIL || 'admin@emberoak.demo', password: process.env.DEMO_ADMIN_PASSWORD || 'Admin#Demo2026' },
-    customer: { email: process.env.DEMO_CUSTOMER_EMAIL || 'customer@emberoak.demo', password: process.env.DEMO_CUSTOMER_PASSWORD || 'Customer#Demo2026' },
+    admin: { email: process.env.DEMO_ADMIN_EMAIL || 'admin@emberoak.demo', password: demoPassword('DEMO_ADMIN_PASSWORD', 'admin') },
+    customer: { email: process.env.DEMO_CUSTOMER_EMAIL || 'customer@emberoak.demo', password: demoPassword('DEMO_CUSTOMER_PASSWORD', 'customer') },
   },
   sessionSecret: process.env.SESSION_SECRET || '',
   allowGuestCheckout: bool(process.env.ALLOW_GUEST_CHECKOUT, true),

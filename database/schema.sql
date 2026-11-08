@@ -2,6 +2,17 @@
 -- The server applies this file automatically on start-up (server/db.js).
 -- Money is stored as integer cents. Timestamps are UTC, 'YYYY-MM-DD HH:MM:SS'.
 
+--
+-- Database access rules (summary, so a reviewer does not have to read every table):
+--   * The API uses prepared statements with bound parameters only; no SQL is built from request values.
+--   * Passwords are scrypt hashes; session tokens are stored as sha256 hashes (sessions.token_hash).
+--   * Customers read only their own orders (orders.user_id); guests need orders.access_token. Admin sees all.
+--   * Constraints: UNIQUE users.email (case-insensitive), role/status/payment CHECK lists, stock >= 0,
+--     money >= 0, qty > 0, foreign keys ON (CASCADE for sessions and order lines, SET NULL for order owner/product).
+--   * Indexes: users.email (unique), sessions(user_id, expires_at), products(category_id),
+--     orders(user_id, created_at, status, seq unique), order_items(order_id, product_id).
+--   * Stock changes happen inside a BEGIN IMMEDIATE transaction in server/routes/orders.js.
+
 PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS users (

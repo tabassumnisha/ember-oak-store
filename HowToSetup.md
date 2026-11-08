@@ -52,7 +52,7 @@ sqlite3 store.db < database/seed.sql      # demo data, optional
 Set `DATABASE_PATH` to the file you want the server to use. Back it up by copying the file while the server is stopped, or with `sqlite3 store.db ".backup backup.db"`.
 
 ## First admin login
-- **Demo mode** (default): sign in at `/#/admin` with `admin@emberoak.demo` / `Admin#Demo2026`. A customer account `customer@emberoak.demo` / `Customer#Demo2026` is also loaded.
+- **Demo mode** (default): sign in at `/#/admin` with `admin@emberoak.demo` and the password you set in `DEMO_ADMIN_PASSWORD` (the demo sign-in page also shows it). A customer account `customer@emberoak.demo` is loaded too, with the password from `DEMO_CUSTOMER_PASSWORD`. If you set neither, a random password is printed in the server log at start-up.
 - **Real store**: set `DEMO_MODE=false`, `ADMIN_EMAIL` and an `ADMIN_PASSWORD` of 10+ characters, start on an empty database, and sign in at `/#/admin` with those. No demo account is created.
 
 ## Branding and content changes
