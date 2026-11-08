@@ -11,7 +11,7 @@ This project bundles the following open-source components. Each keeps its own li
 
 All product illustrations, icons, copy and sample data in this project are original work written for the demo.
 
-The Ember & Oak logo, the ten background images in `src/assets/images/` and the seven product photographs in `public/products/` were supplied by the author of this project, who holds the rights to use and license them. They contain no third-party stock photography.
+The Ember & Oak logo, the ten background images in `src/assets/images/` and the thirteen product photographs in `public/products/` (seven supplied, six made from them by changing the bag label text) were supplied by the author of this project, who holds the rights to use and license them. They contain no third-party stock photography.
 
 The back end uses only Node.js built-in modules (`node:http`, `node:sqlite`, `node:crypto`), so it adds no third-party packages. Replace them with your own artwork when you rebrand the store.
 

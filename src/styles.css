@@ -424,6 +424,13 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--brass-ink);
 .form-grid .wide { grid-column: 1 / -1; }
 
 /* Responsive */
+/* Phones, tablets and phones in "desktop site" mode: keep the finder text on a solid panel so the photo never hides it. */
+@media (max-width: 1280px) {
+  .finder-copy { padding: 28px 24px; background: rgba(248, 249, 244, 0.95); border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(15, 31, 26, 0.08); }
+  .finder-blurb { color: var(--pine); }
+  .finder-copy .text-link { color: var(--pine); font-weight: 500; }
+  .section-photo { padding: 130px 0 150px; }
+}
 @media (max-width: 1080px) {
   .grid-4 { grid-template-columns: repeat(3, 1fr); }
   .hero-in { gap: 32px; }
@@ -436,9 +443,6 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--brass-ink);
   .band { padding: 0 20px; }
   .logo img { height: 48px; }
   .section-photo { padding: 72px 0 120px; background-size: cover; background-position: center bottom; }
-  .finder-copy { padding: 28px 22px; background: rgba(248, 249, 244, 0.94); border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(15, 31, 26, 0.08); }
-  .finder-blurb { color: var(--pine); }
-  .finder-copy .text-link { color: var(--pine); font-weight: 500; }
   .hero { background-position: 72% center; }
   .hero::before { background: rgba(10, 24, 19, 0.55); }
   .band figcaption { flex-direction: column; align-items: flex-start; }

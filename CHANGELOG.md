@@ -10,11 +10,11 @@ Full-stack release. The store now has a real back end.
 - Guest order confirmation pages are protected by a private link token.
 - Added login rate limiting, CSRF checks, security headers and a content security policy.
 - Added 16 API tests (`npm test`).
-- Added seven product photographs and three new products (Sumatra Mandheling, Copper French Press, Emerald Moka Pot).
+- Added thirteen product photographs (seven supplied, six coffee-bag variants with their own labels) and three new products (Sumatra Mandheling, Copper French Press, Emerald Moka Pot).
 - Improved readability of text over background images on phones.
 - New deployment files: Node-based `Dockerfile`, `docker-compose.yml`, `render.yaml`, `.env.example`.
 - Added Vercel demo hosting (`vercel.json`, `api/[...path].js`) with stateless signed sessions; data is temporary in this mode.
-- Centred the loading and error pages.
+- Centred the loading and error pages. Finder text now sits on a solid panel up to 1280 px wide, so it stays readable on phones in desktop-site mode.
 - Removed the static-only deployment files (`nginx.conf`, `netlify.toml`).
 
 ## 1.0.0 (2026-11-06)

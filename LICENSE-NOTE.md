@@ -66,7 +66,7 @@ Questions, extra licences or permission requests: **info@ridebangla.bd** (Ride B
 |---|---|---|
 | `src/assets/images/logo.webp` | Ember & Oak logo | Supplied by the Licensor, who holds the rights to use and license it. Covered by Part A. |
 | `src/assets/images/*.webp` (ten files: `bg-beans`, `bg-cup`, `bg-light`, `bg-wave`, `gear`, `hero`, `kit`, `roasts`, `scene-brew`, `tasting`) | Banners and backgrounds | Supplied by the Licensor, who holds the rights to use and license them. Covered by Part A. |
-| `public/products/*.webp` (seven files) | Product photographs of coffee bags and brewing gear | Supplied by the Licensor, who holds the rights to use and license them. Covered by Part A. |
+| `public/products/*.webp` (thirteen files) | Product photographs of coffee bags and brewing gear | Seven supplied by the Licensor, who holds the rights to use and license them. The other six coffee-bag photos are the Licensor's bag photos with the label text changed. Covered by Part A. |
 | `public/favicon.png` | Site icon | Derived from the logo. Covered by Part A. |
 | SVG illustrations in `src/art.jsx` | Product drawings used when a product has no photo | Original code-drawn artwork written for this Software. Covered by Part A. |
 
