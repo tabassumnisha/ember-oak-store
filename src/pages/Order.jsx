@@ -1,16 +1,34 @@
+import { useEffect, useState } from 'react'
 import { Link } from '../router'
-import { useStore } from '../store'
+import { api } from '../api'
 import { money } from '../config'
 import { Icon } from '../components/Icons'
 import { fmtDate, usePageTitle } from '../utils'
 import NotFound from './NotFound'
 import lightBg from '../assets/images/bg-light.webp'
 
-export default function Order({ id }) {
+export default function Order({ id, token }) {
   usePageTitle('Order confirmed')
-  const { orders } = useStore()
-  const o = orders.find((x) => x.id === id)
-  if (!o) return <NotFound />
+  const [o, setO] = useState(null)
+  const [state, setState] = useState('loading')
+
+  useEffect(() => {
+    setState('loading')
+    api('GET', `/orders/${encodeURIComponent(id)}${token ? `?token=${encodeURIComponent(token)}` : ''}`)
+      .then((d) => { setO(d.order); setState('ready') })
+      .catch((e) => setState(e.status === 401 ? 'signin' : 'missing'))
+  }, [id, token])
+
+  if (state === 'loading') return <div className="wrap page empty" role="status"><p className="muted">Loading your order…</p></div>
+  if (state === 'signin')
+    return (
+      <div className="wrap page empty">
+        <h1>Sign in to see this order</h1>
+        <p className="muted">Orders can be opened from the link in your confirmation or from your account.</p>
+        <Link to="/account/login" className="btn btn-dark">Sign in</Link>
+      </div>
+    )
+  if (state === 'missing' || !o) return <NotFound />
   return (
     <div className="photo-light" style={{ backgroundImage: `url(${lightBg})` }}>
     <div className="wrap page confirm">
@@ -42,7 +60,7 @@ export default function Order({ id }) {
           <div className="grand"><dt>Total</dt><dd>{money(o.total)}</dd></div>
         </dl>
         <p className="muted small">
-          Placed {fmtDate(o.createdAt)}. Payment: {o.payment}.
+          Placed {fmtDate(o.createdAt)}. Payment: {o.payment}. Status: {o.status}.
         </p>
       </div>
       <Link to="/shop" className="btn btn-dark">

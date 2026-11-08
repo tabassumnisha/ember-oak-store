@@ -2,5 +2,15 @@ services:
   store:
     build: .
     ports:
-      - "8080:80"
+      - "3000:3000"
+    environment:
+      DEMO_MODE: "true"        # set to "false" and fill the two admin variables for a real store
+      # ADMIN_EMAIL: owner@your-domain.example
+      # ADMIN_PASSWORD: change-me-to-a-long-random-password
+      # COOKIE_SECURE: "true"  # when served over HTTPS
+    volumes:
+      - store-data:/data
     restart: unless-stopped
+
+volumes:
+  store-data:

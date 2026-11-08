@@ -1,0 +1,20 @@
+# Optional one-click blueprint for Render (https://render.com). A persistent disk keeps the SQLite file.
+services:
+  - type: web
+    name: ember-oak
+    runtime: node
+    plan: starter
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: DEMO_MODE
+        value: "true"
+      - key: DATABASE_PATH
+        value: /var/data/ember-oak.db
+      - key: NODE_VERSION
+        value: 22.14.0
+    disk:
+      name: store-data
+      mountPath: /var/data
+      sizeGB: 1

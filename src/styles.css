@@ -435,7 +435,10 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--brass-ink);
   .wrap { padding: 0 20px; }
   .band { padding: 0 20px; }
   .logo img { height: 48px; }
-  .section-photo { padding: 96px 0 220px; background-size: cover; background-position: center top; }
+  .section-photo { padding: 72px 0 120px; background-size: cover; background-position: center bottom; }
+  .finder-copy { padding: 28px 22px; background: rgba(248, 249, 244, 0.94); border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(15, 31, 26, 0.08); }
+  .finder-blurb { color: var(--pine); }
+  .finder-copy .text-link { color: var(--pine); font-weight: 500; }
   .hero { background-position: 72% center; }
   .hero::before { background: rgba(10, 24, 19, 0.55); }
   .band figcaption { flex-direction: column; align-items: flex-start; }
@@ -449,6 +452,8 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--brass-ink);
   .search input { width: 140px; }
   .announce-2 { display: none; }
   .hero-in { padding-top: 56px; padding-bottom: 56px; min-height: 480px; }
+  .hero::before { background: linear-gradient(180deg, rgba(10, 24, 19, 0.6) 0%, rgba(10, 24, 19, 0.82) 100%); }
+  .hero-sub { color: var(--chalk); }
   .trust-in { grid-template-columns: 1fr 1fr; }
   .section { padding: 64px 0; }
   .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); gap: 32px 16px; }
@@ -476,3 +481,11 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--brass-ink);
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   .rise { opacity: 1; }
 }
+
+/* accounts */
+.demo-logins { display: grid; gap: 6px; margin-top: 18px; }
+.demo-acct { display: grid; gap: 4px; padding-top: 10px; border-top: 1px solid rgba(15, 31, 26, 0.12); justify-items: start; }
+.demo-role { font-weight: 600; }
+.demo-logins code { font-size: 13px; background: rgba(15, 31, 26, 0.07); padding: 1px 6px; word-break: break-all; }
+.acct-h { margin: 40px 0 16px; font-size: 26px; }
+.btn[disabled] { opacity: 0.6; cursor: progress; }

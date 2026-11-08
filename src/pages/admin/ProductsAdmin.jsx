@@ -48,7 +48,6 @@ function toForm(p) {
 function validate(f, existingIds, isNew) {
   const e = {}
   if (f.name.trim().length < 2) e.name = 'Enter a product name.'
-  if (isNew && existingIds.includes(slug(f.name))) e.name = 'A product with this name already exists.'
   if (!(Number(f.price) > 0)) e.price = 'Enter a price above 0.'
   if (!Number.isInteger(Number(f.stock)) || Number(f.stock) < 0) e.stock = 'Enter a whole number, 0 or more.'
   if (f.summary.trim().length < 5) e.summary = 'Add a short summary.'
@@ -63,7 +62,8 @@ function Editor({ product, onClose }) {
   const set = (k, v) => setF((x) => ({ ...x, [k]: v }))
   const isBean = f.category === 'beans'
 
-  const submit = (e) => {
+  const [saving, setSaving] = useState(false)
+  const submit = async (e) => {
     e.preventDefault()
     const errs = validate(f, products.map((p) => p.id), isNew)
     setErrors(errs)
@@ -102,9 +102,15 @@ function Editor({ product, onClose }) {
       delete next.sizes
       next.details = product?.details || ['Free 30-day returns']
     }
-    saveProduct(next)
-    notify(isNew ? 'Product added' : 'Product saved')
-    onClose()
+    setSaving(true)
+    try {
+      await saveProduct(next, isNew)
+      notify(isNew ? 'Product added' : 'Product saved')
+      onClose()
+    } catch (err) {
+      setErrors({ ...err.fields, form: err.message })
+      setSaving(false)
+    }
   }
 
   const Err = ({ k }) => (errors[k] ? <p className="err">{errors[k]}</p> : null)
@@ -192,7 +198,8 @@ function Editor({ product, onClose }) {
           </label>
         </div>
         <div className="btn-row">
-          <button className="btn btn-dark" type="submit">
+          {errors.form && <p className="err" role="alert">{errors.form}</p>}
+          <button className="btn btn-dark" type="submit" disabled={saving}>
             {isNew ? 'Add product' : 'Save changes'}
           </button>
           <button className="btn btn-outline" type="button" onClick={onClose}>

@@ -91,7 +91,7 @@ export default function Home() {
         <div className="wrap finder">
           <div className="finder-copy">
             <h2>Not sure where to start?</h2>
-            <p className="lede">Tell us how you like your cup. We will point you to three coffees that fit.</p>
+            <p className="lede">Tell us how you like your cup. We will point you to the coffees that fit.</p>
             <div className="pills" role="tablist" aria-label="Taste">
               {TASTES.map((t) => (
                 <button key={t.id} role="tab" aria-selected={taste === t.id} className={`pill ${taste === t.id ? 'on' : ''}`} onClick={() => setTaste(t.id)}>

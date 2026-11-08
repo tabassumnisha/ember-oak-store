@@ -1,115 +1,135 @@
-# Ember & Oak: premium coffee storefront (React + Vite)
+# Ember & Oak: full-stack coffee store (React + Node + SQLite)
 
-A complete, ready-to-brand online store for a specialty coffee roaster, with a store admin dashboard. Everything runs in the browser, so you can see it working in seconds and then connect it to your own backend.
+A complete online store for a specialty coffee roaster. Customers browse, register, order and track their orders. The owner signs in to an admin panel to manage products and orders. A real server and database sit behind it, so you can rebrand it and go live.
 
-> **What this is, and what it is not.** This is a front-end application. Products, carts, orders and the admin session are stored in the browser (`localStorage`). There is no server, no database and no payment gateway in this package. Section 6 lists exactly what to connect before taking real orders.
+## Demo logins (demo mode)
+
+| Role | Email | Password |
+|---|---|---|
+| Admin | `admin@emberoak.demo` | `Admin#Demo2026` |
+| Customer | `customer@emberoak.demo` | `Customer#Demo2026` |
+
+Admin panel: `/#/admin`. Customer sign-in: `/#/account/login`. The login pages show these details too while `DEMO_MODE=true`.
 
 ## 1. What you get
 
 **Storefront**
-- Home page with a roast-this-week hero, taste finder, featured roasts, brewing gear and a starter-kit banner
-- Shop page with category, taste, origin and roast filters, search, sorting and an in-stock toggle
-- Product pages with size, grind and colour options, tasting notes, flavour profile, image views, reviews and related products
-- Slide-in bag with a free-shipping progress bar and live totals
-- Checkout with field validation, two shipping methods, tax, card or cash-on-delivery, and an order confirmation page
-- Wishlist, delivery and returns page, contact form, 404 page
+- Home page with hero, taste finder, featured roasts, brewing gear and a starter-kit banner
+- Shop with category, taste, origin and roast filters, search, sorting and an in-stock toggle
+- Product pages with size, grind and colour options, tasting notes, flavour profile, photos and related products
+- Slide-in bag with a free-shipping progress bar, wishlist, checkout with validation, shipping methods, tax, card or cash on delivery
+- Order confirmation page, delivery and contact pages
 
-**Store admin** (`#/admin`)
-- Overview with revenue, orders, average order value, a 14-day revenue chart, best sellers and low-stock alerts
-- Product manager: add, edit and delete products, with stock tracking
-- Order manager: filter by status, open order details and change status
-- Settings and a one-click "restore demo data"
+**Customer accounts**
+- Register, sign in, sign out
+- "My account" with order history; a customer can only ever see their own orders
 
-**Quality**
-- 16 products in 4 categories and 22 sample orders, all original and invented for the demo
-- Brand logo and ten photographic backgrounds (hero, roast and gear banners, starter-kit scene, newsletter band, page headers), optimised to WebP, in `src/assets/images/`
-- Original SVG illustrations for every product, so the product grid needs no photo licences. Set `image` on a product to use a real photo instead
-- Responsive layout for phone, tablet and desktop, visible keyboard focus, labelled forms, reduced-motion support
-- About 280 kB of JavaScript (about 86 kB gzipped), plus about 1.6 MB of optimised images that load lazily. No runtime dependencies beyond React
+**Admin panel**
+- Overview with revenue, orders, average order value, a 14-day chart, best sellers and low-stock alerts
+- Products: add, edit, delete, stock
+- Orders: filter by status, open details, change status (cancelling returns stock)
+- Settings and a one-click "Restore demo data" (demo mode only)
+
+**Back end**
+- Node.js HTTP API with no npm dependencies (uses built-in `node:http`, `node:sqlite`, `node:crypto`)
+- SQLite database with schema and seed files
+- Server-side authentication, roles, price and stock calculation, validation, rate limiting, CSRF checks, security headers
+- 16 automated API tests
 
 ## 2. Tech stack
 
 | Layer | Choice |
 |---|---|
-| UI | React 19 |
-| Build | Vite 7 with `@vitejs/plugin-react` |
-| Routing | Small built-in hash router (`src/router.jsx`) |
-| State | React context + `localStorage` (`src/store.jsx`) |
-| Styling | One plain CSS file with design tokens in `:root` |
-| Fonts | Inter, bundled locally (no external requests) |
-| Database | None. Browser storage only |
-| Server needs | None. Any static host works |
+| UI | React 19.2, plain CSS tokens, Inter font bundled locally |
+| Build | Vite 7 |
+| Server | Node.js 22.13+ built-in `http` (no framework) |
+| Database | SQLite via built-in `node:sqlite` |
+| Auth | Email + password, scrypt hashes, random session tokens stored hashed, HttpOnly SameSite cookie |
+| Tests | `node --test` |
 
-Node 20.19 or newer is required to build.
+Database tables: `users`, `sessions`, `categories`, `products`, `orders`, `order_items` (see `database/schema.sql`).
 
 ## 3. Quick start
 
+Requires Node.js 22.13 or newer.
+
 ```bash
 npm install
-npm run dev       # http://localhost:5173
-npm run build     # outputs to dist/
-npm run preview   # serves dist/ locally
+npm run build
+npm start          # http://localhost:3000, demo data loads on first start
 ```
 
-No environment variables or API keys are needed. More detail is in `HowToSetup.md`.
+Development with hot reload, in two terminals:
 
-**Demo admin login:** `admin@emberoak.demo` / `admin123` (set in `src/config.js`).
+```bash
+npm run dev:server   # API on :3000
+npm run dev          # React on :5173, proxies /api to :3000
+```
 
-## 4. Make it yours
+Run the tests with `npm test`. More detail is in `HowToSetup.md`.
+
+## 4. Configuration
+
+Copy `.env.example` and set the values you need. The most important:
+
+| Variable | Meaning |
+|---|---|
+| `DEMO_MODE` | `true` loads sample data and the demo accounts. `false` starts empty and creates one admin from `ADMIN_EMAIL` / `ADMIN_PASSWORD` |
+| `DATABASE_PATH` | Where the SQLite file lives. Put it on a persistent disk or volume |
+| `PORT` | HTTP port, default 3000 |
+| `COOKIE_SECURE`, `TRUST_PROXY` | Turn on when running behind HTTPS or a reverse proxy |
+
+Tax rate, shipping prices and the free-shipping threshold are in `server/config.js`.
+
+## 5. Make it yours
 
 | To change | Edit |
 |---|---|
-| Store name, contact details, currency, tax rate, shipping prices, free-shipping threshold | `src/config.js` |
-| Products, prices, stock, tasting notes, sizes | `src/data/products.js` (or use the admin) |
-| Logo and backgrounds | Replace the files in `src/assets/images/` (same file names) |
-| Product photos | Add `image: '/path.jpg'` to a product |
-| Colours and typography | Design tokens at the top of `src/styles.css` |
-| Page copy | The files in `src/pages/` |
+| Store name, address, contact details | `src/config.js` |
+| Tax, shipping prices, free-shipping threshold | `server/config.js` |
+| Products and sample orders | the admin panel, or `database/seed.sql` for the starting data |
+| Logo and backgrounds | the files in `src/assets/images/` (same file names) |
+| Product photos | `public/products/`, then set the product's image path in the admin |
+| Colours and typography | design tokens at the top of `src/styles.css` |
 
-## 5. Deployment (two supported routes)
+## 6. Deployment (three routes)
+
+The store needs a host that can run Node.js and keep a file on disk. Static-only hosts (Netlify, Vercel static, GitHub Pages) cannot run the server.
 
 **Route A: Docker on a VPS**
 ```bash
-docker compose up -d --build     # serves on http://SERVER_IP:8080
+docker compose up -d --build     # http://SERVER_IP:3000, data kept in a Docker volume
 ```
-The included `Dockerfile` builds the site and serves it with nginx. Put a reverse proxy or your host's load balancer in front for HTTPS.
+Put HTTPS in front (Caddy, nginx, Traefik or your cloud load balancer) and set `COOKIE_SECURE=true`.
 
-**Route B: static hosting (Netlify, Vercel, Cloudflare Pages, GitHub Pages, S3 + CDN)**
-Build command `npm run build`, publish directory `dist`. A `netlify.toml` is included. The app uses hash routes, so no rewrite rules are needed.
+**Route B: Render, Railway, Fly.io or any Node host**
+Build command `npm install && npm run build`, start command `npm start`, Node 22.13+, and a persistent disk mounted at the folder of `DATABASE_PATH`. A `render.yaml` blueprint for Render is included. Persistent disks are a paid feature on most hosts.
 
-A VPS without Docker also works: run `npm run build` and copy `dist/` to any web root.
+**Route C: plain VPS without Docker**
+`npm install && npm run build`, then run `npm start` under systemd or pm2 behind a reverse proxy.
 
-Hosting estimate: a 1 vCPU / 512 MB server or the free tier of any static host.
+Hosting estimate: 1 vCPU and 512 MB RAM is enough.
 
-## 6. Before you take real orders
+## 7. Before you take real orders
 
-This demo deliberately keeps everything client-side. To go live, connect these pieces:
+1. Set `DEMO_MODE=false`, set `ADMIN_EMAIL` and a long `ADMIN_PASSWORD`, and start with an empty database.
+2. Connect a payment provider. The card form only validates format; card details are never stored or sent.
+3. Connect an email service. Order, newsletter and contact messages currently show on-screen confirmations only.
+4. Put the site behind HTTPS and back up the SQLite file.
+5. Review tax and shipping rules for your country.
 
-1. **Catalogue and orders.** Replace the `load` and `save` helpers in `src/store.jsx` with calls to your API or headless commerce backend.
-2. **Payments.** The card form in `src/pages/Checkout.jsx` only validates format. Card details are never stored or sent anywhere. Swap it for Stripe, PayPal or your gateway.
-3. **Admin access.** The admin login is a front-end demo, so it is not real access control. Protect `/admin` and every write with server-side authentication and roles.
-4. **Tax and shipping.** The flat rates in `src/config.js` are placeholders.
-5. **Emails.** The newsletter and contact forms show a confirmation only. Connect them to your email service.
-
-## 7. Project structure
+## 8. Project structure
 
 ```
-src/
-  config.js            store settings and money formatting
-  store.jsx            cart, wishlist, orders, products, admin session
-  router.jsx           hash router
-  art.jsx              original SVG product illustrations
-  styles.css           design tokens and all styles
-  assets/images/       logo and background images (WebP)
-  assets/fonts/        Inter, bundled locally
-  data/                sample products and seeded orders
-  components/          header, footer, bag drawer, product card, icons
-  pages/               storefront pages
-  pages/admin/         admin dashboard, products, orders
+server/        API: config, db, auth, routes, validation, pricing, static files
+database/      schema.sql and seed.sql
+tests/         API tests
+src/           React app (pages, components, store, API client, styles)
+public/        favicon and product photos
 ```
 
 `CLAUDE.md` explains the codebase for AI coding tools. It was built with Claude Code.
 
-## 8. Licence, updates and support
+## 9. Licence, updates and support
 
-Sold under the Vibe96 Standard License (see `LICENSE.md`). Open-source notices are in `THIRD_PARTY_NOTICES.md`. Security and defect fixes are published through Vibe96 for 12 months from each sale, and support tickets are answered within two business days for 30 days.
+Sold under the Vibe96 Standard License (see `LICENSE-NOTE.md`). Open-source notices are in `THIRD_PARTY_NOTICES.md`. See `CHANGELOG.md` for releases. Security and defect fixes are published through Vibe96 for 12 months from each sale, and support tickets are answered within two business days for 30 days.

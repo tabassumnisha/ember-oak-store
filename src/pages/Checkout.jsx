@@ -41,8 +41,10 @@ function Field({ id, label, error, form, set, ...rest }) {
 
 export default function Checkout() {
   usePageTitle('Checkout')
-  const { cartLines, quote, placeOrder } = useStore()
-  const [form, setForm] = useState(EMPTY)
+  const { cartLines, quote, placeOrder, user } = useStore()
+  const [busy, setBusy] = useState(false)
+  const [serverError, setServerError] = useState('')
+  const [form, setForm] = useState(() => ({ ...EMPTY, email: user?.email || '', name: user?.name || '' }))
   const [errors, setErrors] = useState({})
   const [shippingId, setShippingId] = useState('standard')
   const [payment, setPayment] = useState('Card')
@@ -71,12 +73,16 @@ export default function Checkout() {
       return
     }
     // Card details are validated here and then discarded. They are never stored or sent anywhere.
-    const order = placeOrder({
+    setBusy(true)
+    setServerError('')
+    placeOrder({
       customer: { name: form.name.trim(), email: form.email.trim(), phone: form.phone.trim(), city: `${form.city.trim()}, ${form.region.trim()}`, address: form.address.trim(), zip: form.zip.trim() },
       payment: payment === 'Card' ? 'Card' : 'Cash on delivery',
       shippingId,
     })
-    navigate(`/order/${order.id}`)
+      .then((order) => navigate(`/order/${order.id}?token=${order.accessToken}`))
+      .catch((err) => setServerError(err.message))
+      .finally(() => setBusy(false))
   }
 
   const fp = { form, set }
@@ -166,8 +172,9 @@ export default function Checkout() {
             <div><dt>Tax</dt><dd>{money(q.tax)}</dd></div>
             <div className="grand"><dt>Total</dt><dd>{money(q.total)}</dd></div>
           </dl>
-          <button className="btn btn-brass btn-lg btn-block" type="submit">
-            Place order
+          {serverError && <p className="err" role="alert">{serverError}</p>}
+          <button className="btn btn-brass btn-lg btn-block" type="submit" disabled={busy}>
+            {busy ? 'Placing order…' : 'Place order'}
           </button>
         </aside>
       </form>

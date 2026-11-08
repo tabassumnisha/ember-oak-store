@@ -2,52 +2,12 @@ import { useState } from 'react'
 import { Link } from '../../router'
 import { useStore } from '../../store'
 import { STORE } from '../../config'
+import { SignInForm } from '../Account'
 import { Icon } from '../../components/Icons'
 import { usePageTitle } from '../../utils'
 import Overview from './Overview'
 import ProductsAdmin from './ProductsAdmin'
 import OrdersAdmin from './OrdersAdmin'
-
-function Login() {
-  usePageTitle('Admin sign in')
-  const { login } = useStore()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-
-  const submit = (e) => {
-    e.preventDefault()
-    if (!login(email, password)) setError('That email and password do not match. Check the demo login shown below.')
-  }
-
-  return (
-    <div className="wrap page login">
-      <form className="login-card" onSubmit={submit}>
-        <h1>Store admin</h1>
-        <p className="muted">Sign in to manage products and orders.</p>
-        <div className="field">
-          <label htmlFor="a-email">Email</label>
-          <input id="a-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" required />
-        </div>
-        <div className="field">
-          <label htmlFor="a-pass">Password</label>
-          <input id="a-pass" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" required />
-        </div>
-        {error && (
-          <p className="err" role="alert">
-            {error}
-          </p>
-        )}
-        <button className="btn btn-dark btn-block" type="submit">
-          Sign in
-        </button>
-        <p className="notice">
-          Demo login: <code>{STORE.admin.email}</code> / <code>{STORE.admin.password}</code>
-        </p>
-      </form>
-    </div>
-  )
-}
 
 const TABS = [
   { id: 'overview', label: 'Overview', icon: 'chart' },
@@ -57,7 +17,7 @@ const TABS = [
 ]
 
 function Settings() {
-  const { resetDemo, logout } = useStore()
+  const { resetDemo, logout, demoMode } = useStore()
   return (
     <div className="panel">
       <h2>Settings</h2>
@@ -67,11 +27,13 @@ function Settings() {
         <div><dt>Tax rate</dt><dd>{(STORE.taxRate * 100).toFixed(0)}%</dd></div>
         <div><dt>Free shipping over</dt><dd>${STORE.freeShippingOver}</dd></div>
       </dl>
-      <p className="muted">Edit these values in <code>src/config.js</code>.</p>
+      <p className="muted">Tax and shipping are set on the server in <code>server/config.js</code>.</p>
       <div className="btn-row">
-        <button className="btn btn-outline" onClick={resetDemo}>
-          Restore demo data
-        </button>
+        {demoMode && (
+          <button className="btn btn-outline" onClick={resetDemo}>
+            Restore demo data
+          </button>
+        )}
         <button className="btn btn-dark" onClick={logout}>
           Sign out
         </button>
@@ -80,12 +42,24 @@ function Settings() {
   )
 }
 
-// NOTE: this panel is a front-end demo. The session flag lives in the browser, so it is not real access control.
-// Before production, protect these screens and every write with server-side authentication and roles.
+// Access control is enforced by the server on every API call. This screen only hides what a visitor cannot use.
 export default function Admin({ tab = 'overview' }) {
-  const { admin, logout } = useStore()
+  const { admin, user, logout } = useStore()
   usePageTitle('Admin')
-  if (!admin) return <Login />
+  if (!user)
+    return (
+      <div className="wrap page login">
+        <SignInForm title="Store admin" intro="Sign in to manage products and orders." role="admin" next="/admin" />
+      </div>
+    )
+  if (!admin)
+    return (
+      <div className="wrap page empty">
+        <h1>Admin access only</h1>
+        <p className="muted">You are signed in as {user.email}, which is a customer account.</p>
+        <button className="btn btn-dark" onClick={logout}>Sign out</button>
+      </div>
+    )
   const current = TABS.some((t) => t.id === tab) ? tab : 'overview'
   return (
     <div className="wrap page admin">

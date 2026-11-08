@@ -41,7 +41,7 @@ function Profile({ profile }) {
 }
 
 export default function Product({ id }) {
-  const { products, findProduct, addToCart, wishlist, toggleWish } = useStore()
+  const { products, status, findProduct, addToCart, wishlist, toggleWish } = useStore()
   const p = findProduct(id)
   usePageTitle(p?.name)
 
@@ -64,7 +64,7 @@ export default function Product({ id }) {
 
   const related = useMemo(() => (p ? products.filter((x) => x.id !== p.id && x.category === p.category).slice(0, 4) : []), [products, p])
 
-  if (!p) return <NotFound />
+  if (!p) return status === 'ready' ? <NotFound /> : null
 
   const price = unitPrice(p, size)
   const saved = wishlist.includes(p.id)

@@ -3,44 +3,56 @@
 Guidance for AI coding tools (Claude Code, Codex, Cursor) working in this repository.
 
 ## What this project is
-A front-end e-commerce store for a fictional coffee roaster, "Ember & Oak", with a store admin. React 19 + Vite 7. There is no backend: data lives in `localStorage` under keys starting `emberoak.v1`.
+"Ember & Oak", a full-stack e-commerce store for a fictional coffee roaster. React 19 + Vite 7 front end, a dependency-free Node 22 API, SQLite database. Customers and one admin role, server-side auth.
 
 ## Commands
-- `npm install` then `npm run dev` for development
-- `npm run build` for production output in `dist/`
-- There is no test runner or linter configured
+- `npm install`, then `npm run build`, then `npm start` (http://localhost:3000)
+- Development: `npm run dev:server` and `npm run dev` in two terminals (Vite proxies `/api` to :3000)
+- `npm test` runs `tests/api.test.js` with `node --test` on an in-memory database
+- No linter is configured
 
-## Architecture
-- `src/main.jsx` mounts `<StoreProvider><App/></StoreProvider>`.
-- `src/router.jsx` is a hash router (`#/shop?cat=beans`). `useRoute()` returns `{ path, query }`. Use `navigate(to)`, `buildQuery(obj)` and `<Link to>`. Do not add a router library.
-- `src/App.jsx` maps the first path segment to a page component.
-- `src/store.jsx` holds all state: products, orders, cart, wishlist, admin flag, toast. Read it with `useStore()`. Every mutation goes through a function in the context value. Persistence is the `load` and `save` helpers at the top, which is the single place to swap in an API.
-- `src/config.js` holds store settings (name, tax, shipping, demo admin login) and `money()`.
-- `src/data/products.js` holds the sample catalogue. `src/data/seedOrders.js` builds deterministic sample orders.
-- `src/art.jsx` draws every product illustration as SVG. A product's `art` object selects the drawing and colours. A product with an `image` field shows that photo instead (see `components/Media.jsx`).
-- `src/pages/` holds one component per route. `src/pages/admin/` holds the admin screens.
-- `src/assets/images/` holds the logo (`logo.webp`, transparent) and backgrounds. Home, shop, info and order pages import them. Keep new images under about 250 kB.
-- `public/favicon.png` is copied to the site root by Vite.
-- `src/styles.css` is the only stylesheet. Colours, fonts and radii are CSS custom properties in `:root`.
+## Server (`server/`)
+- `index.js` creates the HTTP server: `/api/*` goes to the router, everything else is static files from `dist/`.
+- `config.js` reads environment variables and holds store rules (tax rate, shipping prices, free-shipping threshold, in cents).
+- `db.js` opens SQLite (`node:sqlite`), applies `database/schema.sql`, seeds demo data in `DEMO_MODE`, or creates the admin from env vars. `tx()` wraps a transaction.
+- `auth.js` scrypt password hashing, session tokens (random, stored as sha256), cookie helpers, in-memory rate limiter.
+- `routes.js` every endpoint. Each handler calls `requireUser` or `requireAdmin` itself. Add new routes with `route(method, pattern, handler, { body: true })`.
+- `validate.js` input validation. `pricing.js` row-to-JSON mapping and `priceOrder()`, which prices an order from database values only.
+- `http.js` JSON helpers, security headers, CSRF origin check, static file serving.
 
-## Data shape (product)
-`id` (slug), `name`, `category` (`beans|gear|cups|gifts`), `price`, optional `compareAt`, `stock`, `summary`, `description`, `rating`, `reviews`, `featured`, `created`, `art`. Coffee products add `origin`, `roast`, `process`, `altitude`, `notes`, `profile {acidity, body, sweetness}` and `sizes [{label, price}]`. Other products add `details[]` and optionally `colors [{label, value}]`.
+## Database (`database/`)
+`schema.sql` is idempotent (`IF NOT EXISTS`) and runs on every start. `seed.sql` is demo content, loaded only into an empty database. Money is integer cents in the database and dollars in the JSON the API returns.
+
+## API summary
+Public: `GET /api/health|config|products|products/:id|auth/me`, `POST /api/auth/login|register|logout`, `POST /api/orders`, `GET /api/orders/:id?token=`.
+Signed in: `GET /api/orders` (own orders; admin gets all), `GET /api/orders/:id` (owner or admin).
+Admin only: `POST|PUT|DELETE /api/products`, `PATCH /api/orders/:id`, `POST /api/admin/reset-demo` (demo mode only).
+
+## Front end (`src/`)
+- `main.jsx` mounts `<StoreProvider><App/></StoreProvider>`. `api.js` is the fetch wrapper.
+- `store.jsx` holds products (loaded from the API), user, orders, bag and wishlist. Bag and wishlist stay in `localStorage` (`emberoak.v2.*`). Everything else comes from the server.
+- `router.jsx` is a hash router (`#/shop?cat=beans`). Use `navigate(to)`, `buildQuery(obj)` and `<Link to>`. Do not add a router library.
+- `pages/` one component per route; `pages/Account.jsx` has sign-in, register and the account page; `pages/admin/` the admin screens.
+- `art.jsx` SVG product illustrations, used when a product has no `image`. `components/Media.jsx` chooses.
+- `styles.css` is the only stylesheet; tokens are CSS custom properties in `:root`.
+- `config.js` holds branding and display defaults. Tax and shipping are overwritten at start-up from `/api/config`, so edit `server/config.js` for those.
 
 ## Conventions
-- Plain JavaScript with JSX, function components and hooks. No TypeScript, no CSS-in-JS.
-- Keep files under about 300 lines. Split a page into components rather than growing it.
-- Money is formatted only through `money()`. Prices are numbers in major units (dollars).
-- Copy is plain, sentence case, active voice. Buttons name the action ("Add to bag", "Place order").
-- Every form field needs a visible `<label>` and an inline error message. Keep focus styles visible.
-- Do not use `dangerouslySetInnerHTML`. All user input is rendered as text.
+- Plain JavaScript (ES modules), JSX function components, no TypeScript, no CSS-in-JS.
+- Keep files under about 300 lines.
+- Never trust the browser: prices, totals, stock and roles are decided on the server. The checkout sends product ids and quantities only.
+- Every form field has a visible `<label>` and an inline error. No `dangerouslySetInnerHTML`.
+- Copy is plain, sentence case, active voice.
 
 ## Security notes
-- The admin login and session flag are a front-end demo, not access control. Do not treat `admin` state as a security boundary. When adding a backend, enforce authentication and roles on the server for every write.
-- Card details are validated in `Checkout.jsx` and discarded. Never store or log them. Use a payment provider's hosted fields.
-- Never commit real keys, tokens or passwords. The only credential in the repo is the documented demo admin login in `src/config.js`.
+- Do not put secrets in the repo. The only credentials are the demo accounts in `database/seed.sql`, active only in demo mode. Delete them before going live.
+- Card details are validated in `Checkout.jsx` and discarded; they are never sent to the server. Use a payment provider's hosted fields.
+- Session cookie is HttpOnly and SameSite=Lax. State-changing requests must be JSON and pass an Origin check.
+- Add a role check to every new write endpoint and a test for the 401 and 403 cases in `tests/api.test.js`.
 
 ## Common tasks
-- **Add a product:** use Admin, Products, or add an object to `initialProducts`. Existing browsers keep earlier data until "Restore demo data" is used.
-- **Add a category:** add it to `CATEGORIES` in `src/data/products.js`. The shop filters and the header link pattern pick it up.
-- **Connect a backend:** replace `load` and `save` in `src/store.jsx` and make the mutation functions call your API.
-- **Re-skin:** edit the tokens at the top of `src/styles.css` and the palette in `src/art.jsx`.
+- **Add a product:** admin, Products, or add a row to `database/seed.sql` (demo data only).
+- **Add a category:** insert it in `database/schema.sql` (lookup rows at the bottom) and add it to `CATEGORIES` in `src/data/products.js`.
+- **Change tax or shipping:** `server/config.js`.
+- **Add a payment provider:** create the payment on the server in `POST /api/orders` after `priceOrder()`, using `priced.total`.
+- **Re-skin:** tokens at the top of `src/styles.css`, images in `src/assets/images/`.

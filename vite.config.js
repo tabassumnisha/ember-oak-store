@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// base './' lets the built site run from any sub-folder or static host.
-// The app uses hash routing (#/shop), so no server rewrite rules are needed.
+// In development Vite serves the React app on :5173 and forwards /api to the Node server on :3000.
+// In production the Node server serves the built files from dist/ itself.
 export default defineConfig({
   base: './',
   plugins: [react()],
+  server: { proxy: { '/api': 'http://localhost:3000' } },
 })

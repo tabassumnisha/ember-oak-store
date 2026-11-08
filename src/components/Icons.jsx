@@ -15,6 +15,7 @@ const PATHS = {
   chevron: 'M6 9l6 6 6-6',
   edit: 'M4 20h4L19 9l-4-4L4 16v4zM13 7l4 4',
   trash: 'M5 7h14M9 7V4h6v3m-8 0 1 13h8l1-13',
+  user: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-8 9c0-4 3.6-6 8-6s8 2 8 6',
   logout: 'M10 5H5v14h5M15 8l4 4-4 4M19 12H9',
   box: 'M3 8l9-5 9 5v8l-9 5-9-5V8zm0 0 9 5 9-5M12 13v8',
   chart: 'M4 20V10m6 10V4m6 16v-7m4 7H3',

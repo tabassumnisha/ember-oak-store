@@ -30,7 +30,7 @@ const NAV = [
 ]
 
 export function Header() {
-  const { totals, wishlist, setDrawerOpen } = useStore()
+  const { totals, wishlist, setDrawerOpen, user } = useStore()
   const [open, setOpen] = useState(false)
   const [searching, setSearching] = useState(false)
   const [q, setQ] = useState('')
@@ -91,6 +91,9 @@ export function Header() {
                 <Icon name="search" />
               </button>
             )}
+            <Link to={user ? '/account' : '/account/login'} className="icon-btn" aria-label={user ? 'My account' : 'Sign in'}>
+              <Icon name="user" />
+            </Link>
             <Link to="/wishlist" className="icon-btn" aria-label={`Wishlist, ${wishlist.length} saved`}>
               <Icon name="heart" />
               {wishlist.length > 0 && <span className="dot">{wishlist.length}</span>}
