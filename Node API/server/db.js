@@ -4,7 +4,7 @@ import { DatabaseSync } from 'node:sqlite'
 import { config } from './config.js'
 import { hashPassword } from './auth.js'
 
-const read = (f) => fs.readFileSync(path.join(config.root, 'database', f), 'utf8')
+const read = (f) => fs.readFileSync(path.join(config.databaseDir, f), 'utf8')
 
 export function openDb(file = config.dbPath) {
   if (file !== ':memory:') fs.mkdirSync(path.dirname(file), { recursive: true })

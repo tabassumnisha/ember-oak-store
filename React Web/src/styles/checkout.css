@@ -1,0 +1,30 @@
+/* Checkout */
+.checkout { display: grid; grid-template-columns: 1fr 420px; gap: 72px; align-items: start; }
+.checkout-main { display: grid; gap: 48px; }
+.checkout h2 { font-size: 26px; margin-bottom: 20px; }
+.choice { display: flex; align-items: center; gap: 14px; padding: 16px 18px; border: 1px solid var(--line); border-radius: var(--radius); margin-bottom: 10px; cursor: pointer; background: var(--paper); }
+.choice span { flex: 1; }
+.choice.on { border-color: var(--char); box-shadow: inset 0 0 0 1px var(--char); }
+.choice input { accent-color: var(--pine); }
+.card-fields { padding: 8px 4px 8px; }
+.summary { position: sticky; top: 104px; padding: 28px; background: var(--paper); border: 1px solid var(--line); }
+.sum-lines { display: grid; gap: 16px; margin: 20px 0; }
+.sum-lines li { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; }
+.confirm-card .sum-lines li { grid-template-columns: 1fr auto; }
+.sum-lines small { display: block; color: var(--moss); font-size: 13px; }
+.sum-img { position: relative; }
+.sum-img .line-img { width: 60px; height: 60px; }
+.qty-dot { position: absolute; top: -6px; right: -6px; min-width: 20px; height: 20px; border-radius: 10px; background: var(--pine); color: var(--chalk); font-size: 12px; display: grid; place-items: center; }
+.totals { display: grid; gap: 10px; padding-top: 18px; border-top: 1px solid var(--line); margin-bottom: 22px; font-size: 15px; }
+.totals div { display: flex; justify-content: space-between; }
+.totals dt { color: var(--moss); }
+.totals .grand { font-size: 20px; font-weight: 600; padding-top: 10px; }
+.totals .grand dt { color: var(--char); }
+
+.confirm { max-width: 640px; display: grid; gap: 20px; justify-items: start; }
+.confirm-badge { width: 64px; height: 64px; border-radius: 50%; background: var(--pine); color: var(--brass-hi); display: grid; place-items: center; }
+.confirm-card { width: 100%; padding: 28px; background: var(--paper); border: 1px solid var(--line); }
+.prose { max-width: 760px; }
+.prose > * + * { margin-top: 20px; }
+.prose h2 { font-size: 28px; margin-top: 36px; }
+.contact { margin-top: 28px; max-width: 520px; }

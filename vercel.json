@@ -1,7 +1,9 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
+  "framework": null,
+  "installCommand": "cd \"React Web\" && npm install --no-audit --no-fund",
+  "buildCommand": "cd \"React Web\" && npm run build",
+  "outputDirectory": "React Web/dist",
   "functions": {
-    "api/[...path].js": { "includeFiles": "database/**" }
+    "api/[...path].mjs": { "includeFiles": "database/**" }
   }
 }

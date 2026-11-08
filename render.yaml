@@ -4,8 +4,8 @@ services:
     name: ember-oak
     runtime: node
     plan: starter
-    buildCommand: npm install && npm run build
-    startCommand: npm start
+    buildCommand: cd "React Web" && npm install && npm run build
+    startCommand: cd "Node API" && npm start
     healthCheckPath: /api/health
     envVars:
       - key: DEMO_MODE

@@ -1,8 +1,12 @@
 // All settings come from environment variables. See .env.example.
+import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+// `root` is the Node API folder. In the ZIP the SQL scripts and the built front end sit next to it:
+//   database/  and  React Web/dist/   (the Docker image copies them under /app instead).
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
+const firstExisting = (...c) => c.find((p) => fs.existsSync(p)) || c[c.length - 1]
 const bool = (v, d) => (v === undefined || v === '' ? d : ['1', 'true', 'yes', 'on'].includes(String(v).toLowerCase()))
 
 export const config = {
@@ -10,7 +14,8 @@ export const config = {
   port: Number(process.env.PORT) || 3000,
   host: process.env.HOST || '0.0.0.0',
   dbPath: path.resolve(root, process.env.DATABASE_PATH || 'data/ember-oak.db'),
-  staticDir: path.resolve(root, process.env.STATIC_DIR || 'dist'),
+  databaseDir: process.env.DATABASE_SCRIPTS_DIR ? path.resolve(root, process.env.DATABASE_SCRIPTS_DIR) : firstExisting(path.join(root, 'database'), path.resolve(root, '..', 'database')),
+  staticDir: process.env.STATIC_DIR ? path.resolve(root, process.env.STATIC_DIR) : firstExisting(path.join(root, 'dist'), path.resolve(root, '..', 'React Web', 'dist')),
   demoMode: bool(process.env.DEMO_MODE, true),
   adminEmail: (process.env.ADMIN_EMAIL || '').trim().toLowerCase(),
   adminPassword: process.env.ADMIN_PASSWORD || '',

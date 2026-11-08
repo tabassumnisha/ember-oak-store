@@ -64,23 +64,23 @@ Questions, extra licences or permission requests: **info@ridebangla.bd** (Ride B
 ### B1. Images
 | Location | What it is | Source and rights |
 |---|---|---|
-| `src/assets/images/logo.webp` | Ember & Oak logo | Supplied by the Licensor, who holds the rights to use and license it. Covered by Part A. |
-| `src/assets/images/*.webp` (ten files: `bg-beans`, `bg-cup`, `bg-light`, `bg-wave`, `gear`, `hero`, `kit`, `roasts`, `scene-brew`, `tasting`) | Banners and backgrounds | Supplied by the Licensor, who holds the rights to use and license them. Covered by Part A. |
-| `public/products/*.webp` (thirteen files) | Product photographs of coffee bags and brewing gear | Seven supplied by the Licensor, who holds the rights to use and license them. The other six coffee-bag photos are the Licensor's bag photos with the label text changed. Covered by Part A. |
-| `public/favicon.png` | Site icon | Derived from the logo. Covered by Part A. |
-| SVG illustrations in `src/art.jsx` | Product drawings used when a product has no photo | Original code-drawn artwork written for this Software. Covered by Part A. |
+| `React Web/src/assets/images/logo.webp` | Ember & Oak logo | Supplied by the Licensor, who holds the rights to use and license it. Covered by Part A. |
+| `React Web/src/assets/images/*.webp` (ten files: `bg-beans`, `bg-cup`, `bg-light`, `bg-wave`, `gear`, `hero`, `kit`, `roasts`, `scene-brew`, `tasting`) | Banners and backgrounds | Supplied by the Licensor, who holds the rights to use and license them. Covered by Part A. |
+| `React Web/public/products/*.webp` (thirteen files) | Product photographs of coffee bags and brewing gear | Seven supplied by the Licensor, who holds the rights to use and license them. The other six coffee-bag photos are the Licensor's bag photos with the label text changed. Covered by Part A. |
+| `React Web/public/favicon.png` | Site icon | Derived from the logo. Covered by Part A. |
+| SVG illustrations in `React Web/src/art.jsx` | Product drawings used when a product has no photo | Original code-drawn artwork written for this Software. Covered by Part A. |
 
 The images show the fictional brand "Ember & Oak" only. They contain no real people and no third-party brands or trademarks. When you replace them with your own images, you are responsible for having the rights to them.
 
 ### B2. Fonts
-Inter (subset, WOFF files in `src/assets/fonts/`) by The Inter Project Authors, licensed under the **SIL Open Font License 1.1** (https://openfontlicense.org). The full licence text is in `THIRD_PARTY_NOTICES.md` and must stay with the font files.
+Inter (subset, WOFF files in `React Web/src/assets/fonts/`) by The Inter Project Authors, licensed under the **SIL Open Font License 1.1** (https://openfontlicense.org). The full licence text is in `THIRD_PARTY_NOTICES.md` and must stay with the font files.
 
 ### B3. Icons
-All icons are small inline SVG paths in `src/components/Icons.jsx`. There is no icon font and no external request.
+All icons are small inline SVG paths in `React Web/src/components/Icons.jsx`. There is no icon font and no external request.
 
 ### B4. Code and dependencies
 - Runtime packages: `react` and `react-dom` 19.2.8 (MIT). Build packages: `vite` 7.0.0 and `@vitejs/plugin-react` 5.0.0 (MIT). Exact versions are pinned in `package.json`.
-- The server (`server/`) imports only Node.js built-in modules (`node:http`, `node:sqlite`, `node:crypto`, `node:fs`, `node:path`). No CDN scripts, analytics or tracking.
+- The server (`Node API/server/`) imports only Node.js built-in modules (`node:http`, `node:sqlite`, `node:crypto`, `node:fs`, `node:path`). No CDN scripts, analytics or tracking.
 - The Dockerfile uses the pinned official image `node:22.14.0-alpine3.21`. Move to a current patch release or a digest when you deploy.
 - All other HTML, CSS, JavaScript and SQL were written for this Software and are covered by Part A.
 

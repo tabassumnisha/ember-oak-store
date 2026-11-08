@@ -1,68 +1,92 @@
 # How to set up Ember & Oak on a clean machine
 
+The package has two parts and two ways to run it:
+
+```
+Node API/    the server (package.json, package-lock.json, server/, tests/)
+React Web/   the storefront and admin (package.json, package-lock.json, src/, public/)
+database/    schema.sql and seed.sql
+docs/        API reference, database diagram, customisation guide
+```
+
 ## Requirements
-- Node.js 22.13 or newer and npm 10 or newer
-- Nothing else: no database server, no API keys
+- Node.js 22.13 or newer and npm 10 or newer (for target A), or Docker 24+ with Compose (for target B)
+- Nothing else: no database server, no API keys. SQLite is built into Node
 
-Check with `node -v`. Older Node versions do not include `node:sqlite` and the server will not start.
+Check with `node -v`. Older Node versions have no `node:sqlite` and the server will not start.
 
-## 1. Install and build
+## Target A: a VPS or any Linux, macOS or Windows machine (no Docker)
+
 ```bash
-npm install
+# 1. Build the storefront
+cd "React Web"
+npm ci
 npm run build
-```
-This installs React and Vite at the exact versions pinned in `package.json` and creates `package-lock.json` on first run. Commit that file so every machine builds the same tree. The server itself needs no packages.
+cd ..
 
-## 2. Start
+# 2. Configure
+cp .env.example "Node API/.env"       # edit it, see "Environment variables" below
+
+# 3. Start the server
+cd "Node API"
+npm ci                                  # the server has no dependencies, this only checks the lockfile
+node --env-file=.env server/index.js    # or: npm start (uses defaults, demo mode on)
+```
+Open http://localhost:3000. For production run it under systemd or pm2 behind nginx, Caddy or Traefik with HTTPS, and set `COOKIE_SECURE=true` and `TRUST_PROXY=true`.
+
+## Target B: Docker
+
 ```bash
-npm start
+docker compose up -d --build        # from the folder that contains docker-compose.yml
 ```
-Open http://localhost:3000. On first start the server creates `data/ember-oak.db`, applies `database/schema.sql` and, because `DEMO_MODE` defaults to `true`, loads `database/seed.sql`.
+Open http://SERVER_IP:3000. The database lives in the `store-data` Docker volume, so it survives rebuilds. Edit the `environment` section of `docker-compose.yml` to change settings. Put HTTPS in front and set `COOKIE_SECURE: "true"`.
 
-Sign in:
-- Admin at http://localhost:3000/#/admin with `admin@emberoak.demo` / `Admin#Demo2026`
-- Customer at http://localhost:3000/#/account/login with `customer@emberoak.demo` / `Customer#Demo2026`
+## Database setup
+Nothing to run by hand. On every start the server executes `database/schema.sql` (safe to repeat, it only creates what is missing). If `DEMO_MODE=true` and the database is empty it then loads `database/seed.sql`.
 
-## 3. Development
+Manual use, if you prefer the SQLite command line:
+```bash
+sqlite3 store.db < database/schema.sql
+sqlite3 store.db < database/seed.sql      # demo data, optional
+```
+Set `DATABASE_PATH` to the file you want the server to use. Back it up by copying the file while the server is stopped, or with `sqlite3 store.db ".backup backup.db"`.
+
+## First admin login
+- **Demo mode** (default): sign in at `/#/admin` with `admin@emberoak.demo` / `Admin#Demo2026`. A customer account `customer@emberoak.demo` / `Customer#Demo2026` is also loaded.
+- **Real store**: set `DEMO_MODE=false`, `ADMIN_EMAIL` and an `ADMIN_PASSWORD` of 10+ characters, start on an empty database, and sign in at `/#/admin` with those. No demo account is created.
+
+## Branding and content changes
+See `docs/customisation.md`. In short: store details in `React Web/src/config.js`, tax and shipping in `Node API/server/config.js`, logo and banners in `React Web/src/assets/images/`, product photos in `React Web/public/products/`, colours in `React Web/src/styles/tokens.css`. After editing the front end run `npm run build` again in `React Web`.
+
+## Environment variables
+Copy `.env.example`. The main ones are `DEMO_MODE`, `DATABASE_PATH`, `PORT`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `COOKIE_SECURE`, `TRUST_PROXY`. Meanings are in the comments in that file and in `README.md`.
+
+## Development
 Two terminals:
 ```bash
-npm run dev:server    # API with auto-restart on :3000
-npm run dev           # React with hot reload on :5173
+cd "Node API" && npm run dev        # API with auto-restart on :3000
+cd "React Web" && npm run dev       # React with hot reload on :5173, forwards /api to :3000
 ```
-Open http://localhost:5173. Vite forwards `/api` calls to port 3000.
+Open http://localhost:5173.
 
-## 4. Tests
+## Tests
 ```bash
-npm test
+cd "Node API" && npm test
 ```
-Runs 16 API tests against an in-memory database. Your data file is not touched.
+17 API tests against an in-memory database. Your data file is not touched.
 
-## 5. Environment variables
-Copy `.env.example` to `.env`, edit it, then start with `node --env-file=.env server/index.js`. Docker Compose reads the same names from `docker-compose.yml`. See the table in `README.md`.
+## Optional: Vercel demo hosting
+Import the repository in Vercel with the default settings (Node 22 or newer). `vercel.json` is included. Demo data is rebuilt in memory when a function instance starts, so edits are temporary. Do not use it for a real store.
 
-## 6. Deploy
-- Docker: `docker compose up -d --build`
-- Node host (Render, Railway, Fly.io, VPS): build `npm install && npm run build`, start `npm start`, mount a persistent disk at the `DATABASE_PATH` folder
-Add HTTPS in front and set `COOKIE_SECURE=true`.
-
-## Vercel demo hosting
-Import the repo in Vercel and deploy with the default settings (Node 22 or newer; `vercel.json` is included). Demo data is rebuilt in memory whenever a function instance starts, so edits are temporary. Do not use Vercel for a real store.
-
-## 7. Go live (turn demo mode off)
-1. Stop the server and delete `data/ember-oak.db` (or use a new path).
-2. Set `DEMO_MODE=false`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` (10+ characters).
-3. Start the server. It creates an empty store with that one admin.
-4. Add your own products in the admin.
-
-## 8. Reset the demo
-Sign in as admin, open Settings and choose "Restore demo data". This works only while `DEMO_MODE=true`. It removes visitor accounts and orders and reloads the samples.
+## Reset the demo
+Sign in as admin, open Settings and choose "Restore demo data" (demo mode only).
 
 ## Troubleshooting
 | Problem | Fix |
 |---|---|
 | `No such built-in module: node:sqlite` | Upgrade Node to 22.13 or newer |
-| "Front end not built" | Run `npm run build` first |
-| Cannot stay signed in over HTTP on a server | Leave `COOKIE_SECURE=false` until HTTPS is on |
+| "Front end not built" | Run `npm run build` inside `React Web` first |
+| Cannot stay signed in over plain HTTP | Leave `COOKIE_SECURE=false` until HTTPS is on |
 | Data disappears after a redeploy | The database file is on a temporary disk. Mount a persistent volume at the `DATABASE_PATH` folder |
 | "Too many sign-in attempts" | Wait 15 minutes; the limit is 10 tries per email and address |
 | Port 3000 in use | Set `PORT=4000` |

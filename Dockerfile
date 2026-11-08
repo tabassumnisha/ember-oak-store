@@ -1,20 +1,21 @@
+# Build from the repository root:  docker build -t ember-oak .
 # Stage 1: build the React front end
-FROM node:22.14.0-alpine3.21 AS build
-WORKDIR /app
-COPY package*.json ./
-# Uses the lockfile when present (commit package-lock.json for reproducible builds).
+FROM node:22.14.0-alpine3.21 AS web
+WORKDIR /web
+COPY ["React Web/package.json", "React Web/package-lock.json*", "./"]
+# Uses the lockfile when present (it is included in the release ZIP).
 RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
-COPY . .
+COPY ["React Web/", "./"]
 RUN npm run build
 
 # Stage 2: run the API and serve the built site. The server has no npm dependencies of its own.
 FROM node:22.14.0-alpine3.21
 ENV NODE_ENV=production PORT=3000 DATABASE_PATH=/data/ember-oak.db
 WORKDIR /app
-COPY package.json ./
-COPY server ./server
+COPY ["Node API/package.json", "./"]
+COPY ["Node API/server", "./server"]
 COPY database ./database
-COPY --from=build /app/dist ./dist
+COPY --from=web /web/dist ./dist
 RUN mkdir -p /data && chown node:node /data
 USER node
 VOLUME /data

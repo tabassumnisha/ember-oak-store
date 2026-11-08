@@ -1,0 +1,48 @@
+# Creates React Web/package-lock.json (needs the npm registry, which some build sandboxes block),
+# checks the build, runs the API tests and attaches the release ZIP to the run.
+name: Lockfile and release ZIP
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["React Web/package.json", ".github/workflows/release.yml"]
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Create the lockfile if it is missing
+        working-directory: React Web
+        run: |
+          if [ ! -f package-lock.json ]; then npm install --package-lock-only --ignore-scripts; fi
+      - name: Install and build the web app
+        working-directory: React Web
+        run: |
+          npm ci --ignore-scripts
+          npm run build
+      - name: Dependency audit (report only)
+        working-directory: React Web
+        continue-on-error: true
+        run: npm audit --audit-level=critical
+      - name: API tests
+        working-directory: Node API
+        run: |
+          npm ci
+          npm test
+      - name: Commit the lockfile
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "React Web/package-lock.json"
+          if ! git diff --staged --quiet; then git commit -m "Add package-lock.json"; git push; fi
+      - name: Build the release ZIP
+        run: git archive --format=zip --prefix=ember-oak-store/ -o ember-oak-store-v2.0.zip HEAD
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ember-oak-store-zip
+          path: ember-oak-store-v2.0.zip

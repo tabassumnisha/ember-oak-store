@@ -7,8 +7,8 @@ process.env.TRUST_PROXY ??= 'true'
 
 let handler
 async function boot() {
-  const { openDb, bootstrap } = await import('../server/db.js')
-  const { createHandler } = await import('../server/routes.js')
+  const { openDb, bootstrap } = await import('../Node API/server/db.js')
+  const { createHandler } = await import('../Node API/server/routes.js')
   const db = openDb(':memory:')
   bootstrap(db)
   return createHandler(db)

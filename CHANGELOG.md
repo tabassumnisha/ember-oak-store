@@ -13,8 +13,11 @@ Full-stack release. The store now has a real back end.
 - Added thirteen product photographs (seven supplied, six coffee-bag variants with their own labels) and three new products (Sumatra Mandheling, Copper French Press, Emerald Moka Pot).
 - Improved readability of text over background images on phones.
 - New deployment files: Node-based `Dockerfile`, `docker-compose.yml`, `render.yaml`, `.env.example`.
-- Added Vercel demo hosting (`vercel.json`, `api/[...path].js`) with stateless signed sessions; data is temporary in this mode.
+- Added Vercel demo hosting (`vercel.json`, `api/[...path].mjs`) with stateless signed sessions; data is temporary in this mode.
 - Centred the loading and error pages. Finder text now sits on a solid panel up to 1280 px wide, so it stays readable on phones in desktop-site mode.
+- Restructured into `Node API/` and `React Web/` (each with its own package.json and lockfile), `database/` and `docs/` (API reference, database diagram, customisation guide).
+- Split the long route file and stylesheet into smaller modules; split the layout components into separate files.
+- Fixed the server start check for folder names that contain a space.
 - Removed the static-only deployment files (`nginx.conf`, `netlify.toml`).
 
 ## 1.0.0 (2026-11-06)

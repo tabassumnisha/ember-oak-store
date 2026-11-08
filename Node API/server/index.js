@@ -1,4 +1,5 @@
 import http from 'node:http'
+import { pathToFileURL } from 'node:url'
 import { config } from './config.js'
 import { openDb, bootstrap } from './db.js'
 import { createHandler } from './routes.js'
@@ -14,7 +15,7 @@ export function createApp(db) {
 }
 
 // Run directly: node server/index.js
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const db = openDb()
   bootstrap(db)
   createApp(db).listen(config.port, config.host, () =>

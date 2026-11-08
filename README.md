@@ -54,19 +54,11 @@ Database tables: `users`, `sessions`, `categories`, `products`, `orders`, `order
 Requires Node.js 22.13 or newer.
 
 ```bash
-npm install
-npm run build
-npm start          # http://localhost:3000, demo data loads on first start
+cd "React Web" && npm ci && npm run build && cd ..
+cd "Node API" && npm start          # http://localhost:3000, demo data loads on first start
 ```
 
-Development with hot reload, in two terminals:
-
-```bash
-npm run dev:server   # API on :3000
-npm run dev          # React on :5173, proxies /api to :3000
-```
-
-Run the tests with `npm test`. More detail is in `HowToSetup.md`.
+Docker: `docker compose up -d --build`. Development with hot reload: `npm run dev` in both folders. Tests: `npm test` in `Node API`. Full steps for a VPS and for Docker, database setup, first admin login and branding are in `HowToSetup.md`.
 
 ## 4. Configuration
 
@@ -79,18 +71,18 @@ Copy `.env.example` and set the values you need. The most important:
 | `PORT` | HTTP port, default 3000 |
 | `COOKIE_SECURE`, `TRUST_PROXY` | Turn on when running behind HTTPS or a reverse proxy |
 
-Tax rate, shipping prices and the free-shipping threshold are in `server/config.js`.
+Tax rate, shipping prices and the free-shipping threshold are in `Node API/server/config.js`.
 
 ## 5. Make it yours
 
 | To change | Edit |
 |---|---|
-| Store name, address, contact details | `src/config.js` |
-| Tax, shipping prices, free-shipping threshold | `server/config.js` |
+| Store name, address, contact details | `React Web/src/config.js` |
+| Tax, shipping prices, free-shipping threshold | `Node API/server/config.js` |
 | Products and sample orders | the admin panel, or `database/seed.sql` for the starting data |
-| Logo and backgrounds | the files in `src/assets/images/` (same file names) |
-| Product photos | `public/products/`, then set the product's image path in the admin |
-| Colours and typography | design tokens at the top of `src/styles.css` |
+| Logo and backgrounds | the files in `React Web/src/assets/images/` (same file names) |
+| Product photos | `React Web/public/products/`, then set the product's image path in the admin |
+| Colours and typography | design tokens at the top of `React Web/src/styles/tokens.css` |
 
 ## 6. Deployment (four routes)
 
@@ -103,13 +95,13 @@ docker compose up -d --build     # http://SERVER_IP:3000, data kept in a Docker 
 Put HTTPS in front (Caddy, nginx, Traefik or your cloud load balancer) and set `COOKIE_SECURE=true`.
 
 **Route B: Render, Railway, Fly.io or any Node host**
-Build command `npm install && npm run build`, start command `npm start`, Node 22.13+, and a persistent disk mounted at the folder of `DATABASE_PATH`. A `render.yaml` blueprint for Render is included. Persistent disks are a paid feature on most hosts.
+Build command `cd "React Web" && npm ci && npm run build`, start command `cd "Node API" && npm start`, Node 22.13+, and a persistent disk mounted at the folder of `DATABASE_PATH`. A `render.yaml` blueprint for Render is included. Persistent disks are a paid feature on most hosts.
 
 **Route C: plain VPS without Docker**
-`npm install && npm run build`, then run `npm start` under systemd or pm2 behind a reverse proxy.
+Build `React Web`, then run `npm start` in `Node API` under systemd or pm2 behind a reverse proxy (see `HowToSetup.md`).
 
 **Route D: Vercel (live demo only)**
-Import the repository into Vercel. `vercel.json` and `api/[...path].js` are included: the build runs `npm run build` and the API runs as a serverless function with an in-memory copy of the demo data. Sign-in works across instances through signed cookies. Data you change (new orders, edited products) is temporary and resets when the function restarts, so use this route to show the store, not to run it. Optionally set `SESSION_SECRET` in the Vercel project settings.
+Import the repository into Vercel. `vercel.json` and `api/[...path].mjs` are included: the build runs `npm run build` and the API runs as a serverless function with an in-memory copy of the demo data. Sign-in works across instances through signed cookies. Data you change (new orders, edited products) is temporary and resets when the function restarts, so use this route to show the store, not to run it. Optionally set `SESSION_SECRET` in the Vercel project settings.
 
 Hosting estimate: 1 vCPU and 512 MB RAM is enough.
 
@@ -124,11 +116,15 @@ Hosting estimate: 1 vCPU and 512 MB RAM is enough.
 ## 8. Project structure
 
 ```
-server/        API: config, db, auth, routes, validation, pricing, static files
-database/      schema.sql and seed.sql
-tests/         API tests
-src/           React app (pages, components, store, API client, styles)
-public/        favicon and product photos
+Node API/     package.json, package-lock.json
+  server/     config, db, auth, validation, pricing, http helpers, routes/ (one file per area)
+  tests/      API tests
+React Web/    package.json, package-lock.json, index.html, vite.config.js
+  src/        pages, components, store, API client, styles/ (split by area)
+  public/     favicon and product photos
+database/     schema.sql and seed.sql
+docs/         api.md, erd.md (database diagram), customisation.md
+api/          Vercel demo entry (optional)
 ```
 
 `CLAUDE.md` explains the codebase for AI coding tools. It was built with Claude Code.

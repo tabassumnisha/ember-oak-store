@@ -7,18 +7,18 @@ This project bundles the following open-source components. Each keeps its own li
 | [React](https://github.com/facebook/react) and React DOM | 19.2.8 | MIT | UI runtime |
 | [Vite](https://github.com/vitejs/vite) | 7.0.0 | MIT | Dev server and build (dev dependency, not shipped) |
 | [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react) | 5.0.0 | MIT | JSX transform (dev dependency, not shipped) |
-| [Inter](https://github.com/rsms/inter) (subset, WOFF) | 4.x | SIL Open Font License 1.1 | Typeface in `src/assets/fonts/` |
+| [Inter](https://github.com/rsms/inter) (subset, WOFF) | 4.x | SIL Open Font License 1.1 | Typeface in `React Web/src/assets/fonts/` |
 
 All product illustrations, icons, copy and sample data in this project are original work written for the demo.
 
-The Ember & Oak logo, the ten background images in `src/assets/images/` and the thirteen product photographs in `public/products/` (seven supplied, six made from them by changing the bag label text) were supplied by the author of this project, who holds the rights to use and license them. They contain no third-party stock photography.
+The Ember & Oak logo, the ten background images in `React Web/src/assets/images/` and the thirteen product photographs in `React Web/public/products/` (seven supplied, six made from them by changing the bag label text) were supplied by the author of this project, who holds the rights to use and license them. They contain no third-party stock photography.
 
 The back end uses only Node.js built-in modules (`node:http`, `node:sqlite`, `node:crypto`), so it adds no third-party packages. Replace them with your own artwork when you rebrand the store.
 
 ## Inter font licence
 
 Copyright 2016-2023 The Inter Project Authors (https://github.com/rsms/inter).
-The font files in `src/assets/fonts/` are subsets of Inter, used under the SIL Open Font License 1.1, reproduced below.
+The font files in `React Web/src/assets/fonts/` are subsets of Inter, used under the SIL Open Font License 1.1, reproduced below.
 
 ```
 License: OFL-1.1

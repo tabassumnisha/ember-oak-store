@@ -6,7 +6,7 @@ import { money, STORE } from '../config'
 import { Icon, Stars } from '../components/Icons'
 import Media from '../components/Media'
 import ProductCard from '../components/ProductCard'
-import { QtyStepper } from '../components/Layout'
+import QtyStepper from '../components/QtyStepper'
 import { hash, usePageTitle } from '../utils'
 import NotFound from './NotFound'
 
