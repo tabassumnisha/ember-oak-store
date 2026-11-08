@@ -132,4 +132,4 @@ public/        favicon and product photos
 
 ## 9. Licence, updates and support
 
-Sold under the Vibe96 Standard License (see `LICENSE-NOTE.md`). Open-source notices are in `THIRD_PARTY_NOTICES.md`. See `CHANGELOG.md` for releases. Security and defect fixes are published through Vibe96 for 12 months from each sale, and support tickets are answered within two business days for 30 days.
+Licensed under the Standard Licence in `LICENSE-NOTE.md` (one End Product per licence). Open-source notices are in `THIRD_PARTY_NOTICES.md`. See `CHANGELOG.md` for releases. Security and defect fixes are published through Vibe96 for 12 months from each sale, and support tickets are answered within two business days for 30 days.
