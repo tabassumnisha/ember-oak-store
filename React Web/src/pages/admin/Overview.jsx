@@ -13,10 +13,10 @@ function SalesChart({ days }) {
   const ticks = [0, 0.5, 1].map((t) => Math.round(max * t))
   return (
     <svg className="chart" viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Revenue per day for the last 14 days">
-      {ticks.map((t) => {
+      {ticks.map((t, ti) => {
         const y = pad.t + (H - pad.t - pad.b) * (1 - t / max)
         return (
-          <g key={t}>
+          <g key={ti}>
             <line x1={pad.l} x2={W - pad.r} y1={y} y2={y} className="grid-line" />
             <text x={pad.l - 8} y={y + 4} textAnchor="end" className="axis">
               ${t}
