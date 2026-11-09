@@ -9,7 +9,7 @@ A complete online store for a specialty coffee roaster. Customers browse, regist
 | Admin | `admin@emberoak.demo` | the value of `DEMO_ADMIN_PASSWORD` |
 | Customer | `customer@emberoak.demo` | the value of `DEMO_CUSTOMER_PASSWORD` |
 
-Admin panel: `/#/admin`. Customer sign-in: `/#/account/login`. The login pages show these details too while `DEMO_MODE=true`.
+On the Vercel demo no setup is needed: open the sign-in page and use the logins it shows. Admin panel: `/#/admin`. Customer sign-in: `/#/account/login`. The login pages show these details too while `DEMO_MODE=true`.
 
 ## 1. What you get
 

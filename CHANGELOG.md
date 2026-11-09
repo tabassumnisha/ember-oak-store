@@ -3,6 +3,7 @@
 ## 2.0.1 (2026-11-08)
 Audit follow-up.
 - Security audit (2026-11-08): `npm audit` reports 0 vulnerabilities in `React Web` (Vite 7.3.7, React 19.2.8) and `Node API` (no dependencies). The release workflow re-runs it on every build.
+- Vercel demo works with no settings: the signing key is derived from the project's own Vercel id, so demo logins are the same on every instance. The demo sign-in page shows them.
 - Audit round 2: no password is written anywhere in the code, docs or seed data any more. Demo passwords come from `DEMO_*_PASSWORD`, are derived from `SESSION_SECRET`, or are random per start. Added `docs/database.md` and a schema header that list the access rules, constraints and indexes.
 - Demo logins now live in one place (`server/config.js`, overridable with `DEMO_*` variables) and are hashed at start-up. They are no longer stored in `seed.sql`, the front end or the tests.
 - Removed the guessable fallback signing key. Signed (serverless) sessions use `SESSION_SECRET`, or a random per-process key with a warning. They now last 12 hours.
