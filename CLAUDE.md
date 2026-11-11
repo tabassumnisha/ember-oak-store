@@ -34,6 +34,7 @@ Signed in: `GET /api/orders` (own orders; admin gets all), `GET /api/orders/:id`
 Admin only: `POST|PUT|DELETE /api/products`, `PATCH /api/orders/:id`, `POST /api/admin/reset-demo` (demo mode only).
 
 ## Front end (`React Web/src/`)
+- `index.html` (repo `React Web/`) is the plain HTML landing page (`src/landing/landing.css`); the React store is `store/index.html` and is served at `/store/`.
 - `main.jsx` mounts `<StoreProvider><App/></StoreProvider>`. `api.js` is the fetch wrapper.
 - `store.jsx` holds products (loaded from the API), user, orders, bag and wishlist. Bag and wishlist stay in `localStorage` (`emberoak.v2.*`). Everything else comes from the server.
 - `router.jsx` is a hash router (`#/shop?cat=beans`). Use `navigate(to)`, `buildQuery(obj)` and `<Link to>`. Do not add a router library.

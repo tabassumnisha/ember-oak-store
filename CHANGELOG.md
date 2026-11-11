@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.0.2 (2026-11-11)
+Review follow-up.
+- Fixed "Something went wrong" on demo sign-in when hosted on Vercel: the host reads the request body before the handler runs, so the server never received the email and password. The server now uses the parsed body when the host provides it (test added).
+- Sign-in pages have one-click "Sign in as Admin" and "Sign in as Customer" buttons (demo mode only).
+- New landing page at `/` (hero, features, screenshots, benefits, Live demo button). The store moved to `/store/`.
+- Production build now has two pages (`index.html` landing and `store/index.html`), and assets use absolute paths.
+
 ## 2.0.1 (2026-11-08)
 Audit follow-up.
 - Security audit (2026-11-08): `npm audit` reports 0 vulnerabilities in `React Web` (Vite 7.3.7, React 19.2.8) and `Node API` (no dependencies). The release workflow re-runs it on every build.

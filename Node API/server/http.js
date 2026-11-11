@@ -30,6 +30,15 @@ export function send(res, status, body, headers = {}) {
 export function readJson(req, limit = 100_000) {
   return new Promise((resolve, reject) => {
     if (!(req.headers['content-type'] || '').toLowerCase().startsWith('application/json')) return reject(new HttpError(415, 'Send JSON with Content-Type: application/json'))
+    // Some serverless hosts (Vercel) read and parse the body before the handler runs, so the stream has already
+    // ended and will never emit 'end'. Use their parsed copy when it is there.
+    if (req.body !== undefined && req.body !== null) {
+      try {
+        const b = Buffer.isBuffer(req.body) ? req.body.toString('utf8') : req.body
+        return resolve(typeof b === 'string' ? (b ? JSON.parse(b) : {}) : b)
+      } catch { return reject(new HttpError(400, 'Invalid JSON')) }
+    }
+    if (req.readableEnded) return resolve({})
     let size = 0
     const chunks = []
     req.on('data', (c) => {

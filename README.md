@@ -55,7 +55,7 @@ Requires Node.js 22.13 or newer.
 
 ```bash
 cd "React Web" && npm ci && npm run build && cd ..
-cd "Node API" && npm start          # http://localhost:3000, demo data loads on first start
+cd "Node API" && npm start          # landing page at http://localhost:3000, the store at /store/, demo data loads on first start
 ```
 
 Docker: `docker compose up -d --build`. Development with hot reload: `npm run dev` in both folders. Tests: `npm test` in `Node API`. Full steps for a VPS and for Docker, database setup, first admin login and branding are in `HowToSetup.md`.

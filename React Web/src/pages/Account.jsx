@@ -4,7 +4,7 @@ import { useStore } from '../store'
 import { money } from '../config'
 import { fmtDate, usePageTitle } from '../utils'
 
-function DemoLogins({ role, onPick }) {
+function DemoLogins({ role, onPick, onSignIn, busy }) {
   const { demoAccounts } = useStore()
   const list = demoAccounts.filter((a) => !role || a.role === role)
   if (list.length === 0) return null
@@ -16,9 +16,14 @@ function DemoLogins({ role, onPick }) {
           <span className="demo-role">{a.role === 'admin' ? 'Admin' : 'Customer'}</span>
           <span>Email <code>{a.email}</code></span>
           <span>Password <code>{a.password}</code></span>
-          <button type="button" className="link-btn" onClick={() => onPick(a)}>
-            Fill in
-          </button>
+          <span className="demo-actions">
+            <button type="button" className="btn btn-brass btn-sm" disabled={busy} onClick={() => onSignIn(a)}>
+              {busy ? 'Signing in…' : `Sign in as ${a.role === 'admin' ? 'Admin' : 'Customer'}`}
+            </button>
+            <button type="button" className="link-btn" onClick={() => onPick(a)}>
+              Fill in
+            </button>
+          </span>
         </div>
       ))}
     </div>
@@ -32,18 +37,21 @@ export function SignInForm({ title = 'Sign in', intro, role, next = '/account' }
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
 
-  const submit = async (e) => {
-    e.preventDefault()
+  const signIn = async (mail, pass, to) => {
     setBusy(true)
     setError('')
     try {
-      await login(email, password)
-      navigate(next)
+      await login(mail, pass)
+      navigate(to)
     } catch (err) {
       setError(err.message)
     } finally {
       setBusy(false)
     }
+  }
+  const submit = (e) => {
+    e.preventDefault()
+    signIn(email, password, next)
   }
 
   return (
@@ -62,7 +70,7 @@ export function SignInForm({ title = 'Sign in', intro, role, next = '/account' }
       <button className="btn btn-dark btn-block" type="submit" disabled={busy}>
         {busy ? 'Signing in…' : 'Sign in'}
       </button>
-      <DemoLogins role={role} onPick={(a) => { setEmail(a.email); setPassword(a.password) }} />
+      <DemoLogins role={role} busy={busy} onPick={(a) => { setEmail(a.email); setPassword(a.password) }} onSignIn={(a) => signIn(a.email, a.password, a.role === 'admin' ? '/admin' : next)} />
       {!role && (
         <p className="muted small">
           New here? <Link to="/account/register">Create an account</Link>

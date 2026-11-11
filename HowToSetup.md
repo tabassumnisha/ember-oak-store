@@ -32,7 +32,7 @@ cd "Node API"
 npm ci                                  # the server has no dependencies, this only checks the lockfile
 node --env-file=.env server/index.js    # or: npm start (uses defaults, demo mode on)
 ```
-Open http://localhost:3000. For production run it under systemd or pm2 behind nginx, Caddy or Traefik with HTTPS, and set `COOKIE_SECURE=true` and `TRUST_PROXY=true`.
+Open http://localhost:3000 (landing page) and http://localhost:3000/store/ (the store). For production run it under systemd or pm2 behind nginx, Caddy or Traefik with HTTPS, and set `COOKIE_SECURE=true` and `TRUST_PROXY=true`.
 
 ## Target B: Docker
 
@@ -67,7 +67,7 @@ Two terminals:
 cd "Node API" && npm run dev        # API with auto-restart on :3000
 cd "React Web" && npm run dev       # React with hot reload on :5173, forwards /api to :3000
 ```
-Open http://localhost:5173.
+Open http://localhost:5173 (landing page) and http://localhost:5173/store/ (the store).
 
 ## Tests
 ```bash

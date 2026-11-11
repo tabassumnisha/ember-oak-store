@@ -213,3 +213,13 @@ test('selling the last unit twice is refused, and reopening a cancelled order ca
   assert.equal(re.status, 409)
   assert.equal(stock(), 0)
 })
+
+test('request bodies already parsed by the host (Vercel) are accepted', async () => {
+  const { readJson } = await import('../server/http.js')
+  const h = { 'content-type': 'application/json' }
+  assert.deepEqual(await readJson({ headers: h, body: { a: 1 } }), { a: 1 })
+  assert.deepEqual(await readJson({ headers: h, body: '{"b":2}' }), { b: 2 })
+  assert.deepEqual(await readJson({ headers: h, body: Buffer.from('{"c":3}') }), { c: 3 })
+  assert.deepEqual(await readJson({ headers: h, readableEnded: true }), {})
+  await assert.rejects(readJson({ headers: h, body: '{bad' }), { status: 400 })
+})

@@ -3,13 +3,166 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ember &amp; Oak — Coffee roasted this week</title>
-    <meta name="description" content="Specialty coffee, brewing gear and gifts from Ember & Oak. Roasted to order and shipped within 48 hours." />
+    <title>Ember &amp; Oak | Full-stack coffee store with accounts and admin panel</title>
+    <meta name="description" content="A complete React, Node and SQLite coffee store with customer accounts, an admin panel, server-side pricing and tests. Try the live demo." />
     <meta name="theme-color" content="#0F1F1A" />
-    <link rel="icon" type="image/png" href="./favicon.png" />
+    <meta property="og:title" content="Ember &amp; Oak: full-stack coffee store" />
+    <meta property="og:description" content="React, Node and SQLite store with customer accounts and an admin panel. Try the live demo." />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="stylesheet" href="/src/landing/landing.css" />
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <header class="lp-nav">
+      <div class="lp-wrap">
+        <a href="/" aria-label="Ember &amp; Oak home"><img src="/src/assets/images/logo.webp" alt="Ember &amp; Oak specialty coffee" width="160" height="44" /></a>
+        <nav class="lp-links" aria-label="Sections">
+          <a href="#features">Features</a><a href="#screens">Screens</a><a href="#benefits">Why it sells</a><a href="#try">Try it</a>
+        </nav>
+        <a class="lp-btn lp-btn-brass" href="/store/">Live demo</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="lp-hero">
+        <div class="lp-wrap">
+          <div>
+            <span class="lp-eyebrow">Ready-to-sell e-commerce template</span>
+            <h1>A complete coffee store, <em>with accounts and an admin panel.</em></h1>
+            <p class="lp-lead">Storefront, checkout, customer sign-in, order tracking and a back office for the owner. A real Node server and database sit behind it, so you can rebrand it and go live.</p>
+            <div class="lp-cta">
+              <a class="lp-btn lp-btn-brass" href="/store/">Live demo &rarr;</a>
+              <a class="lp-btn lp-btn-line" href="/store/#/admin">Open the admin demo</a>
+            </div>
+            <ul class="lp-stack" aria-label="Tech stack">
+              <li>React 19</li><li>Vite 7</li><li>Node 22</li><li>SQLite</li><li>Zero server dependencies</li>
+            </ul>
+          </div>
+          <div class="lp-shots">
+            <div class="lp-frame"><div class="lp-frame-bar"><i></i><i></i><i></i></div><img src="/src/assets/landing/store-home.webp" width="1280" height="720" alt="Ember and Oak storefront home page" /></div>
+            <div class="lp-frame second"><div class="lp-frame-bar"><i></i><i></i><i></i></div><img src="/src/assets/landing/admin-overview.webp" width="1280" height="720" alt="Admin overview with revenue chart" /></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="lp-proof" aria-label="At a glance">
+        <div class="lp-wrap">
+          <ul>
+            <li><b>19</b><span>demo products</span></li>
+            <li><b>2</b><span>roles: customer and admin</span></li>
+            <li><b>22</b><span>sample orders</span></li>
+            <li><b>19</b><span>API tests passing</span></li>
+            <li><b>0</b><span>known npm vulnerabilities</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="lp-section lp-light" id="features">
+        <div class="lp-wrap">
+          <div class="lp-head">
+            <span class="lp-eyebrow">Key features</span>
+            <h2>Everything a small roaster needs to sell online</h2>
+            <p>Built like a real shop, not a mock-up. Each feature works end to end.</p>
+          </div>
+          <ul class="lp-features">
+        <li class="lp-feature"><span class="lp-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></span><h3>Customer accounts</h3><p>Register, sign in and see order history. Guests can still check out and follow their order through a private link.</p></li>
+        <li class="lp-feature"><span class="lp-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></span><h3>Admin panel</h3><p>Revenue chart, best sellers, low-stock list, product editor and order status updates, all behind a real admin login.</p></li>
+        <li class="lp-feature"><span class="lp-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><h3>Server-side pricing</h3><p>Prices, tax, shipping and stock are decided on the server inside a transaction. A tampered browser cannot change a total.</p></li>
+        <li class="lp-feature"><span class="lp-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></span><h3>Real database</h3><p>SQLite with a clean schema, indexes, constraints and seed data. Runs from one file, no database server to install.</p></li>
+        <li class="lp-feature"><span class="lp-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.4 9.3-8 11-4.6-1.7-8-6-8-11V5l8-3z"/><path d="M9 12l2 2 4-4"/></svg></span><h3>Secure by default</h3><p>Scrypt password hashing, HttpOnly cookies, CSRF checks, rate limits, security headers and a content security policy.</p></li>
+        <li class="lp-feature"><span class="lp-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 16H3L12 3z"/></svg></span><h3>Deploy anywhere</h3><p>Docker, a Node host, a plain VPS or Vercel. Server has zero npm dependencies, so installs are fast and audits are clean.</p></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="lp-section lp-dark" id="screens">
+        <div class="lp-wrap">
+          <div class="lp-head">
+            <span class="lp-eyebrow">Screenshots</span>
+            <h2>See the store and the back office</h2>
+            <p>Every screen below is the running demo.</p>
+          </div>
+          <div class="lp-gallery">
+        <figure class="">
+          <div class="lp-frame"><div class="lp-frame-bar"><i></i><i></i><i></i></div><img src="/src/assets/landing/store-home.webp" width="1280" height="720" loading="lazy" alt="Storefront home page" /></div>
+          <figcaption><b>Home page</b>Hero, roasts and a tasting finder.</figcaption>
+        </figure>
+        <figure class="">
+          <div class="lp-frame"><div class="lp-frame-bar"><i></i><i></i><i></i></div><img src="/src/assets/landing/store-shop.webp" width="1280" height="720" loading="lazy" alt="Storefront" /></div>
+          <figcaption><b>Storefront</b>Filters, tasting notes and stock badges.</figcaption>
+        </figure>
+        <figure class="">
+          <div class="lp-frame"><div class="lp-frame-bar"><i></i><i></i><i></i></div><img src="/src/assets/landing/product.webp" width="1280" height="720" loading="lazy" alt="Product page" /></div>
+          <figcaption><b>Product page</b>Sizes, grind options and reviews.</figcaption>
+        </figure>
+        <figure class="">
+          <div class="lp-frame"><div class="lp-frame-bar"><i></i><i></i><i></i></div><img src="/src/assets/landing/cart.webp" width="1280" height="720" loading="lazy" alt="Bag drawer" /></div>
+          <figcaption><b>Bag drawer</b>Live totals and a free-shipping bar.</figcaption>
+        </figure>
+        <figure class="">
+          <div class="lp-frame"><div class="lp-frame-bar"><i></i><i></i><i></i></div><img src="/src/assets/landing/checkout.webp" width="1280" height="720" loading="lazy" alt="Checkout" /></div>
+          <figcaption><b>Checkout</b>Validated form, server-priced order.</figcaption>
+        </figure>
+        <figure class="">
+          <div class="lp-frame"><div class="lp-frame-bar"><i></i><i></i><i></i></div><img src="/src/assets/landing/account.webp" width="1280" height="720" loading="lazy" alt="Customer account" /></div>
+          <figcaption><b>Customer account</b>Order history after sign-in.</figcaption>
+        </figure>
+        <figure class="">
+          <div class="lp-frame"><div class="lp-frame-bar"><i></i><i></i><i></i></div><img src="/src/assets/landing/admin-overview.webp" width="1280" height="720" loading="lazy" alt="Admin overview" /></div>
+          <figcaption><b>Admin overview</b>Revenue, best sellers and low stock.</figcaption>
+        </figure>
+        <figure class="">
+          <div class="lp-frame"><div class="lp-frame-bar"><i></i><i></i><i></i></div><img src="/src/assets/landing/admin-products.webp" width="1280" height="720" loading="lazy" alt="Product manager" /></div>
+          <figcaption><b>Product manager</b>Add, edit and delete items.</figcaption>
+        </figure>
+        <figure class="">
+          <div class="lp-frame"><div class="lp-frame-bar"><i></i><i></i><i></i></div><img src="/src/assets/landing/admin-orders.webp" width="1280" height="720" loading="lazy" alt="Order manager" /></div>
+          <figcaption><b>Order manager</b>Update status; stock is restored on cancel.</figcaption>
+        </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="lp-section lp-light" id="benefits">
+        <div class="lp-wrap">
+          <div class="lp-head">
+            <span class="lp-eyebrow">Benefits</span>
+            <h2>Why buyers choose it</h2>
+          </div>
+          <div class="lp-benefits">
+        <div class="lp-benefit"><span class="n">01</span><div><h3>Rebrand in minutes</h3><p>Change the name, colours and photos in a few files. The store, layout and the admin follow.</p></div></div>
+        <div class="lp-benefit"><span class="n">02</span><div><h3>Read it, own it</h3><p>Plain JavaScript, small files, no hidden framework. A CLAUDE.md guide makes AI coding tools productive straight away.</p></div></div>
+        <div class="lp-benefit"><span class="n">03</span><div><h3>Tested and documented</h3><p>API tests, an API reference, a database diagram, setup guide and customisation guide are all included.</p></div></div>
+        <div class="lp-benefit"><span class="n">04</span><div><h3>Honest about demo data</h3><p>Demo mode loads sample products and orders. Switch one setting to start with an empty store and your own admin.</p></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="lp-section lp-try" id="try">
+        <div class="lp-wrap">
+          <div>
+            <span class="lp-eyebrow">Try it now</span>
+            <h2>Sign in with one click</h2>
+            <p>The demo has two ready accounts. No sign-up, no card, nothing to install.</p>
+            <ol>
+              <li><span>Open the live demo and browse, add to bag and check out as a customer.</span></li>
+              <li><span>Open the sign-in page and press <strong>Sign in as Customer</strong> or <strong>Sign in as Admin</strong>.</span></li>
+              <li><span>As admin, manage products and move orders from Processing to Delivered.</span></li>
+            </ol>
+            <div class="lp-cta">
+              <a class="lp-btn lp-btn-brass" href="/store/">Live demo &rarr;</a>
+              <a class="lp-btn lp-btn-line" href="/store/#/admin">Admin sign-in</a>
+            </div>
+          </div>
+          <div class="lp-photo"><img src="/src/assets/images/roasts.webp" width="1200" height="900" loading="lazy" alt="Bags of Ember and Oak coffee beside coffee beans" /></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="lp-foot">
+      <div class="lp-wrap">
+        <img src="/src/assets/images/logo.webp" alt="Ember &amp; Oak" width="120" height="34" />
+        <span>Ember &amp; Oak is a demo store with sample data. Orders placed here are not real.</span>
+      </div>
+    </footer>
   </body>
 </html>
