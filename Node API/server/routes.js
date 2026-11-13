@@ -1,6 +1,6 @@
 import { config } from './config.js'
 import { HttpError, send, readJson, checkOrigin } from './http.js'
-import { COOKIE, parseCookies, userFromToken, makeLimiter } from './auth.js'
+import { COOKIE, parseCookies, userFromToken, makeLimiter, stateless } from './auth.js'
 import { systemRoutes } from './routes/system.js'
 import { authRoutes } from './routes/auth.js'
 import { productRoutes } from './routes/products.js'
@@ -10,6 +10,8 @@ import { adminRoutes } from './routes/admin.js'
 // Builds the request handler. Routes are registered by the modules in ./routes/.
 // Every write route calls requireUser or requireAdmin itself: role checks live on the server, not in React.
 export function createHandler(db) {
+  // Signed-cookie sessions cannot be revoked, so they are only allowed for the demo host.
+  if (stateless() && !config.demoMode) throw new Error('STATELESS_SESSIONS is for the demo host only. Set DEMO_MODE=true or STATELESS_SESSIONS=false.')
   const q = (sql) => db.prepare(sql)
   const helpers = {
     db, q,

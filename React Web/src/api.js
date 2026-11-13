@@ -22,6 +22,6 @@ export async function api(method, path, body) {
   }
   let data = null
   try { data = await res.json() } catch { /* empty body */ }
-  if (!res.ok) throw new ApiError(data?.error || 'Something went wrong', res.status, data?.fields)
+  if (!res.ok) throw new ApiError(data?.error || (res.status >= 500 ? `The server did not answer properly (HTTP ${res.status}). Please try again.` : 'Something went wrong'), res.status, data?.fields)
   return data
 }

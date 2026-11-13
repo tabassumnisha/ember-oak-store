@@ -28,7 +28,7 @@ export const COOKIE = 'eo_session'
 // Stateless mode (STATELESS_SESSIONS=true) is for serverless demo hosting such as Vercel, where each
 // function instance has its own temporary database. The cookie is then a signed "userId.expiry.signature"
 // value that any instance can verify. Use the normal database sessions on a real Node host.
-const stateless = () => process.env.STATELESS_SESSIONS === 'true'
+export const stateless = () => process.env.STATELESS_SESSIONS === 'true'
 // Signing key: SESSION_SECRET if set (needed so every serverless instance agrees). Otherwise a random key that
 // lives only in this process, so there is never a guessable default.
 let fallbackSecret
@@ -87,8 +87,11 @@ export function parseCookies(header = '') {
 }
 
 export function sessionCookie(token, secure) {
-  const maxAge = token ? config.sessionDays * 86400 : 0
-  return `${COOKIE}=${token || ''}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${maxAge}${secure ? '; Secure' : ''}`
+  // Demo hosting (stateless) is often shown inside another site's frame, where a SameSite=Lax cookie is dropped.
+  // Over HTTPS the demo cookie is therefore SameSite=None and Partitioned (per embedding site), still HttpOnly.
+  const embedded = stateless() && secure
+  const maxAge = token ? (stateless() ? config.statelessSessionHours * 3600 : config.sessionDays * 86400) : 0
+  return `${COOKIE}=${token || ''}; HttpOnly; SameSite=${embedded ? 'None' : 'Lax'}; Path=/; Max-Age=${maxAge}${secure ? '; Secure' : ''}${embedded ? '; Partitioned' : ''}`
 }
 
 // Simple in-memory limiter: at most `max` hits per `windowMs` for a key.

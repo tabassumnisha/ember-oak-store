@@ -3,11 +3,15 @@ services:
     build: .
     ports:
       - "3000:3000"
+    # Copy .env.example to .env and edit it. Values there are passed to the container.
+    env_file:
+      - path: .env
+        required: false
     environment:
-      DEMO_MODE: "true"        # set to "false" and fill the two admin variables for a real store
-      # ADMIN_EMAIL: owner@your-domain.example
-      # ADMIN_PASSWORD: change-me-to-a-long-random-password
-      # COOKIE_SECURE: "true"  # when served over HTTPS
+      DATABASE_PATH: /data/ember-oak.db
+      # Variables worth setting in .env for a real store:
+      #   DEMO_MODE=false, ADMIN_EMAIL, ADMIN_PASSWORD, COOKIE_SECURE=true (behind HTTPS), TRUST_PROXY=true (behind a proxy)
+      # For a demo copy: DEMO_MODE=true and set DEMO_ADMIN_PASSWORD / DEMO_CUSTOMER_PASSWORD (and SESSION_SECRET).
     volumes:
       - store-data:/data
     restart: unless-stopped

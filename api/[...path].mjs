@@ -1,12 +1,16 @@
-// Vercel serverless entry for the demo. Every /api/* request lands here.
+// Vercel serverless entry for the DEMO site. Every /api/* request lands here.
 // The database lives in memory and is rebuilt from database/seed.sql when an instance starts,
 // so changes made in this mode are temporary. For a real store use a Node host (see README).
 process.env.DEMO_MODE ??= 'true'
 process.env.STATELESS_SESSIONS = 'true'
 process.env.TRUST_PROXY ??= 'true'
-// Nothing to configure for the demo: when SESSION_SECRET is not set, derive it from this project's own Vercel id
-// (not stored in the repo). Every serverless instance then signs sessions and derives the demo passwords the same way.
-// The demo sign-in page shows the resulting demo logins. Set SESSION_SECRET / DEMO_*_PASSWORD yourself to choose them.
+// Demo logins. They are public on purpose (the sign-in page shows them) and exist only on this demo host.
+// A fixed pair means the listing, the sign-in buttons and every serverless instance always agree.
+// Override in the host's settings with DEMO_*_PASSWORD. A real store never uses this file.
+process.env.DEMO_ADMIN_PASSWORD ||= 'Admin#Demo2026'
+process.env.DEMO_CUSTOMER_PASSWORD ||= 'Customer#Demo2026'
+// Signing key for the demo cookies: SESSION_SECRET if set, otherwise derived from this project's own Vercel id,
+// so every serverless instance signs and verifies the same way.
 if (!process.env.SESSION_SECRET && process.env.VERCEL_PROJECT_ID) {
   const { createHash } = await import('node:crypto')
   process.env.SESSION_SECRET = createHash('sha256').update('ember-oak|' + process.env.VERCEL_PROJECT_ID).digest('hex')
@@ -22,6 +26,15 @@ async function boot() {
 }
 
 export default async function (req, res) {
-  handler ??= boot()
-  return (await handler)(req, res)
+  try {
+    handler ??= boot().catch((e) => { handler = undefined; throw e }) // a failed start is retried on the next request
+    return await (await handler)(req, res)
+  } catch (e) {
+    console.error('[ember-oak] api error', e)
+    if (!res.headersSent) {
+      res.statusCode = 500
+      res.setHeader('Content-Type', 'application/json')
+    }
+    res.end(JSON.stringify({ error: 'The demo server is starting up. Please try again in a moment.' }))
+  }
 }

@@ -159,7 +159,14 @@ export function StoreProvider({ children }) {
   )
 
   const login = useCallback(async (email, password) => {
-    const d = await api('POST', '/auth/login', { email, password })
+    let d
+    try {
+      d = await api('POST', '/auth/login', { email, password })
+    } catch (e) {
+      if (e.status < 500) throw e // wrong password and similar: show it
+      await new Promise((r) => setTimeout(r, 700)) // a server instance may have just started; try once more
+      d = await api('POST', '/auth/login', { email, password })
+    }
     setUser(d.user)
     return d.user
   }, [])

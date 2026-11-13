@@ -66,7 +66,7 @@ Copy `.env.example` and set the values you need. The most important:
 
 | Variable | Meaning |
 |---|---|
-| `DEMO_MODE` | `true` loads sample data and the demo accounts. `false` starts empty and creates one admin from `ADMIN_EMAIL` / `ADMIN_PASSWORD` |
+| `DEMO_MODE` | `true` (demo only) loads sample data and the demo accounts. `false` starts empty and creates one admin from `ADMIN_EMAIL` / `ADMIN_PASSWORD` |
 | `DATABASE_PATH` | Where the SQLite file lives. Put it on a persistent disk or volume |
 | `PORT` | HTTP port, default 3000 |
 | `SESSION_SECRET` | Long random string. Required for signed sessions on serverless hosting (Vercel) |

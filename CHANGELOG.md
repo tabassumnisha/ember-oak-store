@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.0.3 (2026-11-13)
+Admin demo sign-in follow-up.
+- Demo host: the demo logins are fixed and public (`admin@emberoak.demo`, `customer@emberoak.demo`) so the listing, the sign-in buttons and every serverless instance always agree. They live only in `api/[...path].mjs`, never in the server code.
+- The demo session cookie is `SameSite=None; Secure; Partitioned` over HTTPS, so sign-in also works when the demo is shown inside another site's frame. Real hosts keep `SameSite=Lax`.
+- The Vercel entry never crashes silently: a failed start is retried and errors return JSON. Sign-in retries once on a server error and shows the HTTP status instead of a vague message.
+- `GET /api/health` also reports the Node version, commit, and user and product counts, to check a deployment.
+- Signed-cookie sessions are refused unless `DEMO_MODE=true`. Unknown and not-yours orders now both return 404. Admin order list is capped at 500.
+- `.env.example` is safe by default (`DEMO_MODE=false`). `docker-compose.yml` reads `.env`. `HowToSetup.md` documents every variable, the run directory and where `dist` lives.
+
 ## 2.0.2 (2026-11-11)
 Review follow-up.
 - Fixed "Something went wrong" on demo sign-in when hosted on Vercel: the host reads the request body before the handler runs, so the server never received the email and password. The server now uses the parsed body when the host provides it (test added).

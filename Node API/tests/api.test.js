@@ -131,8 +131,8 @@ test('cancelling an order returns the stock', async () => {
 
 test('guest order page needs the access token', async () => {
   const o = (await call('POST', '/api/orders', { body: order([{ productId: 'house-blend-no1', qty: 1 }]) })).json.order
-  assert.equal((await call('GET', `/api/orders/${o.id}`)).status, 401)
-  assert.equal((await call('GET', `/api/orders/${o.id}?token=wrong`)).status, 401)
+  assert.equal((await call('GET', `/api/orders/${o.id}`)).status, 404)
+  assert.equal((await call('GET', `/api/orders/${o.id}?token=wrong`)).status, 404)
   const ok = await call('GET', `/api/orders/${o.id}?token=${o.accessToken}`)
   assert.equal(ok.status, 200)
   assert.equal(ok.json.order.accessToken, undefined)
@@ -222,4 +222,21 @@ test('request bodies already parsed by the host (Vercel) are accepted', async ()
   assert.deepEqual(await readJson({ headers: h, body: Buffer.from('{"c":3}') }), { c: 3 })
   assert.deepEqual(await readJson({ headers: h, readableEnded: true }), {})
   await assert.rejects(readJson({ headers: h, body: '{bad' }), { status: 400 })
+})
+
+test('demo (stateless) cookie works inside a frame over HTTPS; real hosts keep SameSite=Lax', async () => {
+  const { sessionCookie } = await import('../server/auth.js')
+  assert.match(sessionCookie('tok', true), /SameSite=Lax/)
+  process.env.STATELESS_SESSIONS = 'true'
+  try {
+    assert.match(sessionCookie('tok', true), /SameSite=None; Path=\/; Max-Age=\d+; Secure; Partitioned/)
+    assert.match(sessionCookie('tok', false), /SameSite=Lax/)
+    const { createHandler } = await import('../server/routes.js')
+    const prev = config.demoMode
+    config.demoMode = false
+    assert.throws(() => createHandler(db), /demo host only/)
+    config.demoMode = prev
+  } finally {
+    delete process.env.STATELESS_SESSIONS
+  }
 })

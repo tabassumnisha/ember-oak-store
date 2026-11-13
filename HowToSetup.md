@@ -59,7 +59,24 @@ Set `DATABASE_PATH` to the file you want the server to use. Back it up by copyin
 See `docs/customisation.md`. In short: store details in `React Web/src/config.js`, tax and shipping in `Node API/server/config.js`, logo and banners in `React Web/src/assets/images/`, product photos in `React Web/public/products/`, colours in `React Web/src/styles/tokens.css`. After editing the front end run `npm run build` again in `React Web`.
 
 ## Environment variables
-Copy `.env.example`. The main ones are `DEMO_MODE`, `DATABASE_PATH`, `PORT`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `COOKIE_SECURE`, `TRUST_PROXY`. Meanings are in the comments in that file and in `README.md`.
+Copy `.env.example` to `.env` in the project root, then start the server from `Node API` with `node --env-file=../.env server/index.js` (Docker Compose reads `.env` itself). Every variable in the file:
+
+| Variable | Meaning |
+|---|---|
+| `PORT` | HTTP port, default 3000 |
+| `DATABASE_PATH` | SQLite file, relative to the folder you start the server in (`Node API`), default `data/ember-oak.db` |
+| `DEMO_MODE` | `false` (the example file's value) starts empty and creates one admin. `true` is for demos only: sample data, demo logins on the sign-in page |
+| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | The first admin, used when `DEMO_MODE=false` and the database has no users |
+| `COOKIE_SECURE` | `true` when served over HTTPS |
+| `TRUST_PROXY` | `true` behind a reverse proxy, so rate limits use the real client address. Without it every visitor shares one limit |
+| `STATELESS_SESSIONS`, `SESSION_SECRET` | Serverless demo hosting only (Vercel). Refused when `DEMO_MODE=false` |
+| `DEMO_ADMIN_EMAIL`, `DEMO_ADMIN_PASSWORD`, `DEMO_CUSTOMER_EMAIL`, `DEMO_CUSTOMER_PASSWORD` | Demo logins, demo mode only |
+| `ALLOW_GUEST_CHECKOUT` | `true` (default) lets visitors order without an account |
+| `ALLOWED_ORIGINS` | Extra browser origins allowed to call the API, normally empty |
+
+To try the sample store locally set `DEMO_MODE=true` in `.env` (or run `DEMO_MODE=true npm start` in `Node API`).
+
+Where the built front end lives: the server serves `React Web/dist` when run from this repository, and `/app/dist` inside Docker. Run `npm ci && npm run build` in `React Web` before starting the API, or the site shows a "build the front end" message.
 
 ## Development
 Two terminals:

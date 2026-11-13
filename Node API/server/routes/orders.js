@@ -41,7 +41,7 @@ export function orderRoutes({ db, q, route, requireUser, requireAdmin, writeLimi
 
   route('GET', '/api/orders', (c) => {
     const u = requireUser(c)
-    const rows = u.role === 'admin' ? q('SELECT * FROM orders ORDER BY seq DESC').all() : q('SELECT * FROM orders WHERE user_id = ? ORDER BY seq DESC').all(u.id)
+    const rows = u.role === 'admin' ? q('SELECT * FROM orders ORDER BY seq DESC LIMIT 500').all() : q('SELECT * FROM orders WHERE user_id = ? ORDER BY seq DESC').all(u.id)
     send(c.res, 200, { orders: rows.map((o) => orderOut(o, itemsOf(o.id))) })
   })
 
@@ -50,7 +50,7 @@ export function orderRoutes({ db, q, route, requireUser, requireAdmin, writeLimi
     const token = c.url.searchParams.get('token') || ''
     const tokenOk = o && token.length === o.access_token.length && crypto.timingSafeEqual(Buffer.from(token), Buffer.from(o.access_token))
     const allowed = o && (tokenOk || (c.user && (c.user.role === 'admin' || c.user.id === o.user_id)))
-    if (!allowed) throw new HttpError(o && !c.user ? 401 : 404, o && !c.user ? 'Please sign in' : 'Order not found') // same answer for "missing" and "not yours"
+    if (!allowed) throw new HttpError(404, 'Order not found') // same answer for "missing" and "not yours", so ids cannot be probed
     send(c.res, 200, { order: orderOut(o, itemsOf(o.id)) })
   })
 
