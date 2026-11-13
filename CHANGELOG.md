@@ -1,12 +1,15 @@
 # Changelog
 
+## 2.0.5
+- Fixed the admin demo sign-in on the live demo ("Something went wrong (HTTP 404)"). The Vercel function is now `api/index.mjs` and `vercel.json` rewrites every `/api/*` request to it, so `/api/auth/login` and `/api/auth/demo-login` are always found.
+
 ## 2.0.4 (2026-11-13)
 - The "Sign in as Admin" and "Sign in as Customer" buttons now use `GET /api/auth/demo-login?role=admin|customer` (demo mode only, rate limited). It needs no request body, so it works on any host, including serverless. The email-and-password form still uses `POST /api/auth/login`.
 - Generic errors now show the HTTP status, and the demo server turns a stalled request into a readable message after 8 seconds.
 
 ## 2.0.3 (2026-11-13)
 Admin demo sign-in follow-up.
-- Demo host: the demo logins are fixed and public (`admin@emberoak.demo`, `customer@emberoak.demo`) so the listing, the sign-in buttons and every serverless instance always agree. They live only in `api/[...path].mjs`, never in the server code.
+- Demo host: the demo logins are fixed and public (`admin@emberoak.demo`, `customer@emberoak.demo`) so the listing, the sign-in buttons and every serverless instance always agree. They live only in `api/index.mjs`, never in the server code.
 - The demo session cookie is `SameSite=None; Secure; Partitioned` over HTTPS, so sign-in also works when the demo is shown inside another site's frame. Real hosts keep `SameSite=Lax`.
 - The Vercel entry never crashes silently: a failed start is retried and errors return JSON. Sign-in retries once on a server error and shows the HTTP status instead of a vague message.
 - `GET /api/health` also reports the Node version, commit, and user and product counts, to check a deployment.
@@ -45,7 +48,7 @@ Full-stack release. The store now has a real back end.
 - Added thirteen product photographs (seven supplied, six coffee-bag variants with their own labels) and three new products (Sumatra Mandheling, Copper French Press, Emerald Moka Pot).
 - Improved readability of text over background images on phones.
 - New deployment files: Node-based `Dockerfile`, `docker-compose.yml`, `render.yaml`, `.env.example`.
-- Added Vercel demo hosting (`vercel.json`, `api/[...path].mjs`) with stateless signed sessions; data is temporary in this mode.
+- Added Vercel demo hosting (`vercel.json`, `api/index.mjs`) with stateless signed sessions; data is temporary in this mode.
 - Centred the loading and error pages. Finder text now sits on a solid panel up to 1280 px wide, so it stays readable on phones in desktop-site mode.
 - Restructured into `Node API/` and `React Web/` (each with its own package.json and lockfile), `database/` and `docs/` (API reference, database diagram, customisation guide).
 - Split the long route file and stylesheet into smaller modules; split the layout components into separate files.

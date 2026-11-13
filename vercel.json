@@ -4,11 +4,15 @@
   "buildCommand": "cd \"React Web\" && npm run build",
   "outputDirectory": "React Web/dist",
   "functions": {
-    "api/[...path].mjs": {
+    "api/index.mjs": {
       "includeFiles": "database/**"
     }
   },
   "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "/api"
+    },
     {
       "source": "/store",
       "destination": "/store/index.html"

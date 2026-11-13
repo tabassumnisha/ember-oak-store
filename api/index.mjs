@@ -25,8 +25,19 @@ async function boot() {
   return createHandler(db)
 }
 
+// Vercel sends every /api/* request here through the rewrite in vercel.json. The original path is kept in req.url;
+// if a host passes the target instead (/api?path=auth/login), restore the real path.
+function restorePath(req) {
+  const u = new URL(req.url, 'http://x')
+  if (u.pathname === '/api' || u.pathname === '/api/index') {
+    const p = u.searchParams.get('path')
+    if (p) { u.searchParams.delete('path'); req.url = '/api/' + p.replace(/^\/+/, '') + u.search }
+  }
+}
+
 export default async function (req, res) {
   try {
+    restorePath(req)
     handler ??= boot().catch((e) => { handler = undefined; throw e }) // a failed start is retried on the next request
     const h = await handler
     let timer

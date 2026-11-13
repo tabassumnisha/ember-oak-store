@@ -104,7 +104,7 @@ Build command `cd "React Web" && npm ci && npm run build`, start command `cd "No
 Build `React Web`, then run `npm start` in `Node API` under systemd or pm2 behind a reverse proxy (see `HowToSetup.md`).
 
 **Route D: Vercel (live demo only)**
-Import the repository into Vercel. `vercel.json` and `api/[...path].mjs` are included: the build runs `npm run build` and the API runs as a serverless function with an in-memory copy of the demo data. Sign-in works across instances through signed cookies. Data you change (new orders, edited products) is temporary and resets when the function restarts, so use this route to show the store, not to run it. Optionally set `SESSION_SECRET` in the Vercel project settings.
+Import the repository into Vercel. `vercel.json` and `api/index.mjs` are included: the build runs `npm run build` and the API runs as a serverless function with an in-memory copy of the demo data. Sign-in works across instances through signed cookies. Data you change (new orders, edited products) is temporary and resets when the function restarts, so use this route to show the store, not to run it. Optionally set `SESSION_SECRET` in the Vercel project settings.
 
 Hosting estimate: 1 vCPU and 512 MB RAM is enough.
 
