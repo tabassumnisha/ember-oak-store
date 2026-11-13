@@ -170,6 +170,18 @@ export function StoreProvider({ children }) {
     setUser(d.user)
     return d.user
   }, [])
+  const demoLogin = useCallback(async (role) => {
+    let d
+    try {
+      d = await api('GET', `/auth/demo-login?role=${role}`)
+    } catch (e) {
+      if (e.status < 500) throw e
+      await new Promise((r) => setTimeout(r, 700))
+      d = await api('GET', `/auth/demo-login?role=${role}`)
+    }
+    setUser(d.user)
+    return d.user
+  }, [])
   const register = useCallback(async (name, email, password) => {
     const d = await api('POST', '/auth/register', { name, email, password })
     setUser(d.user)
@@ -215,7 +227,7 @@ export function StoreProvider({ children }) {
     products, status, reload: loadProducts, user, admin: user?.role === 'admin', orders, demoAccounts, demoMode,
     cart, cartLines, totals, wishlist, drawerOpen, toast,
     findProduct, addToCart, setQty, toggleWish, quote, placeOrder,
-    setOrderStatus, saveProduct, deleteProduct, resetDemo, notify, setDrawerOpen, login, register, logout,
+    setOrderStatus, saveProduct, deleteProduct, resetDemo, notify, setDrawerOpen, login, demoLogin, register, logout,
   }
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>
 }

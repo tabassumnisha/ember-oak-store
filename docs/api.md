@@ -10,6 +10,7 @@ State-changing requests (`POST`, `PUT`, `PATCH`, `DELETE`) must be JSON and, whe
 | `GET /api/config` | public | Tax rate, shipping methods, free-shipping threshold; demo logins only in demo mode |
 | `POST /api/auth/register` | public | Create a customer account `{ name, email, password }` (8+ characters). Role is always `customer` |
 | `POST /api/auth/login` | public | `{ email, password }`. 10 attempts per 15 minutes per address and email |
+| `GET /api/auth/demo-login?role=admin\|customer` | demo mode only: signs in the public demo account (404 otherwise) |
 | `POST /api/auth/logout` | public | Ends the session |
 | `GET /api/auth/me` | public | `{ user }` or `{ user: null }` |
 | `GET /api/products` | public | All products |

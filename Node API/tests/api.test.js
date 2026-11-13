@@ -240,3 +240,18 @@ test('demo (stateless) cookie works inside a frame over HTTPS; real hosts keep S
     delete process.env.STATELESS_SESSIONS
   }
 })
+
+test('demo sign-in endpoint signs in the right account and is demo-only', async () => {
+  const a = await call('GET', '/api/auth/demo-login?role=admin')
+  assert.equal(a.status, 200)
+  assert.equal(a.json.user.role, 'admin')
+  assert.equal(a.json.user.email, config.demo.admin.email)
+  const cookie = a.cookie
+  assert.equal((await call('GET', '/api/auth/me', { cookie })).json.user.role, 'admin')
+  const c = await call('GET', '/api/auth/demo-login?role=customer')
+  assert.equal(c.json.user.role, 'customer')
+  const prev = config.demoMode
+  config.demoMode = false
+  assert.equal((await call('GET', '/api/auth/demo-login?role=admin')).status, 404)
+  config.demoMode = prev
+})

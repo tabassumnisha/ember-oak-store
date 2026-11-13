@@ -28,13 +28,16 @@ async function boot() {
 export default async function (req, res) {
   try {
     handler ??= boot().catch((e) => { handler = undefined; throw e }) // a failed start is retried on the next request
-    return await (await handler)(req, res)
+    const h = await handler
+    let timer
+    const timeout = new Promise((_, rej) => { timer = setTimeout(() => rej(new Error('timeout')), 8000) })
+    try { return await Promise.race([h(req, res), timeout]) } finally { clearTimeout(timer) }
   } catch (e) {
     console.error('[ember-oak] api error', e)
     if (!res.headersSent) {
       res.statusCode = 500
       res.setHeader('Content-Type', 'application/json')
     }
-    res.end(JSON.stringify({ error: 'The demo server is starting up. Please try again in a moment.' }))
+    res.end(JSON.stringify({ error: `The demo server could not finish this request (${String(e?.message || e).slice(0, 80)}). Please try again.` }))
   }
 }

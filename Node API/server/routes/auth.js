@@ -1,6 +1,6 @@
 import { config } from '../config.js'
 import { HttpError, send } from '../http.js'
-import { hashPassword, verifyPassword, verifyDummy, createSession, destroySession, sessionCookie } from '../auth.js'
+import { makeLimiter, hashPassword, verifyPassword, verifyDummy, createSession, destroySession, sessionCookie } from '../auth.js'
 import { validateRegister } from '../validate.js'
 
 const publicUser = (u) => ({ id: u.id, email: u.email, name: u.name, role: u.role })
@@ -32,6 +32,18 @@ export function authRoutes({ db, q, route, loginLimit, writeLimit }) {
     loginLimit.reset(key)
     send(c.res, 200, { user: publicUser(row) }, startSession(c, row))
   }, { body: true })
+
+  // Demo sign-in buttons: signs in the public demo admin or customer. Only exists in DEMO_MODE.
+  // A plain GET (no request body to parse), so it works on any host. The demo logins are already public.
+  const demoLimit = makeLimiter(60, 15 * 60 * 1000)
+  route('GET', '/api/auth/demo-login', (c) => {
+    if (!config.demoMode) throw new HttpError(404, 'Not found')
+    if (!demoLimit.take('demo:' + c.ip)) throw new HttpError(429, 'Too many sign-in attempts. Try again in a few minutes.')
+    const role = c.url.searchParams.get('role') === 'admin' ? 'admin' : 'customer'
+    const row = q('SELECT * FROM users WHERE email = ? AND role = ?').get(config.demo[role].email.toLowerCase(), role)
+    if (!row) throw new HttpError(404, 'The demo account is not available. Use "Restore demo data" or restart the demo.')
+    send(c.res, 200, { user: publicUser(row) }, startSession(c, row))
+  })
 
   route('POST', '/api/auth/logout', (c) => {
     destroySession(db, c.token)

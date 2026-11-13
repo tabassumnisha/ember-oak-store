@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.4 (2026-11-13)
+- The "Sign in as Admin" and "Sign in as Customer" buttons now use `GET /api/auth/demo-login?role=admin|customer` (demo mode only, rate limited). It needs no request body, so it works on any host, including serverless. The email-and-password form still uses `POST /api/auth/login`.
+- Generic errors now show the HTTP status, and the demo server turns a stalled request into a readable message after 8 seconds.
+
 ## 2.0.3 (2026-11-13)
 Admin demo sign-in follow-up.
 - Demo host: the demo logins are fixed and public (`admin@emberoak.demo`, `customer@emberoak.demo`) so the listing, the sign-in buttons and every serverless instance always agree. They live only in `api/[...path].mjs`, never in the server code.

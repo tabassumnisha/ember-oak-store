@@ -31,7 +31,7 @@ function DemoLogins({ role, onPick, onSignIn, busy }) {
 }
 
 export function SignInForm({ title = 'Sign in', intro, role, next = '/account' }) {
-  const { login } = useStore()
+  const { login, demoLogin } = useStore()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -43,6 +43,18 @@ export function SignInForm({ title = 'Sign in', intro, role, next = '/account' }
     try {
       await login(mail, pass)
       navigate(to)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setBusy(false)
+    }
+  }
+  const quickSignIn = async (a) => {
+    setBusy(true)
+    setError('')
+    try {
+      await demoLogin(a.role)
+      navigate(a.role === 'admin' ? '/admin' : next)
     } catch (err) {
       setError(err.message)
     } finally {
@@ -70,7 +82,7 @@ export function SignInForm({ title = 'Sign in', intro, role, next = '/account' }
       <button className="btn btn-dark btn-block" type="submit" disabled={busy}>
         {busy ? 'Signing in…' : 'Sign in'}
       </button>
-      <DemoLogins role={role} busy={busy} onPick={(a) => { setEmail(a.email); setPassword(a.password) }} onSignIn={(a) => signIn(a.email, a.password, a.role === 'admin' ? '/admin' : next)} />
+      <DemoLogins role={role} busy={busy} onPick={(a) => { setEmail(a.email); setPassword(a.password) }} onSignIn={quickSignIn} />
       {!role && (
         <p className="muted small">
           New here? <Link to="/account/register">Create an account</Link>
